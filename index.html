@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GasAlert Sri Lanka - Community Gas & Kerosene Tracker</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="h-full bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 font-sans antialiased flex flex-col justify-between transition-colors duration-200">
+
+    <!-- Top Emergency Broadcast Banner -->
+    <div id="broadcast-banner" class="bg-amber-500 text-slate-950 px-4 py-2 text-sm font-medium flex items-center justify-between shadow-sm relative z-50 transition-all duration-300 hidden">
+        <div class="max-w-7xl mx-auto flex items-center space-x-3 overflow-hidden">
+            <span class="flex h-2 w-2 relative shrink-0">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-600 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-red-700"></span>
+            </span>
+            <i class="fa-solid fa-bullhorn shrink-0"></i>
+            <p id="broadcast-text" class="truncate font-semibold">Urgent Notice: Litro Gas main shipment arriving at Peliyagoda depot today afternoon!</p>
+        </div>
+        <button onclick="dismissBroadcast()" class="text-slate-950 hover:bg-amber-600/30 px-2 py-1 rounded text-xs shrink-0 transition"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <!-- Navigation Header -->
+    <header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-40 shadow-xs transition-colors duration-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <!-- Logo & Brand -->
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchView('user')">
+                <div class="h-10 w-10 bg-gradient-to-tr from-emerald-600 to-teal-500 rounded-xl flex items-center justify-center text-white shadow-md shadow-emerald-500/20">
+                    <i class="fa-solid fa-fire-flame-curved text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg text-slate-900 dark:text-white tracking-tight leading-none">GasAlert <span class="text-xs px-2 py-0.5 bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 rounded-full font-semibold ml-1">LK</span></h1>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5" data-i18n="tagline">Community Gas & Kerosene Radar</p>
+                </div>
+            </div>
+
+            <!-- Controls & Language Selector & Theme Toggle -->
+            <div class="flex items-center space-x-2 sm:space-x-3">
+                <!-- Theme Toggle Button -->
+                <button onclick="toggleTheme()" class="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 p-2.5 rounded-xl text-xs sm:text-sm border border-slate-200 dark:border-slate-700 transition" title="Toggle Light/Dark Theme">
+                    <i id="theme-icon" class="fa-solid fa-moon"></i>
+                </button>
+
+                <!-- Language Selector Dropdown -->
+                <div class="relative">
+                    <select id="language-select" onchange="changeLanguage(this.value)" class="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-semibold text-xs sm:text-sm rounded-xl px-3 py-2 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition cursor-pointer">
+                        <option value="en">English</option>
+                        <option value="si">සිංහල</option>
+                        <option value="ta">தமிழ்</option>
+                    </select>
+                </div>
+
+                <div class="bg-slate-100 dark:bg-slate-800 p-1 rounded-xl hidden sm:flex items-center border border-slate-200 dark:border-slate-700">
+                    <button id="btn-user-view" onclick="switchView('user')" class="px-3 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs">
+                        <i class="fa-solid fa-users mr-1.5 text-emerald-600 dark:text-emerald-400"></i> <span data-i18n="nav_citizen">Citizen Feed</span>
+                    </button>
+                    <button id="btn-admin-view" onclick="promptAdminAccess()" class="px-3 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+                        <i class="fa-solid fa-shield-halved mr-1.5 text-slate-500 dark:text-slate-400"></i> <span data-i18n="nav_admin">Admin Portal</span>
+                    </button>
+                </div>
+
+                <button onclick="openReportModal()" class="inline-flex items-center bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm shadow-sm transition active:scale-95">
+                    <i class="fa-solid fa-plus mr-1 sm:mr-2"></i> <span data-i18n="btn_report">Report Arrival</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- ================= CITIZEN VIEW (FRONTEND) ================= -->
+        <div id="view-user" class="space-y-6">
+            
+            <!-- Hero / Safety Banner -->
+            <div class="bg-gradient-to-r from-emerald-800 via-teal-800 to-slate-900 rounded-2xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
+                <div class="absolute -right-10 -bottom-10 opacity-10 text-white pointer-events-none">
+                    <i class="fa-solid fa-gas-pump text-9xl"></i>
+                </div>
+                <div class="max-w-2xl relative z-10">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 mb-3">
+                        <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span> <span data-i18n="hero_badge">Crowdsourced Real-Time Updates</span>
+                    </span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight mb-2" data-i18n="hero_title">Check Gas & Kerosene Stock Before You Queue</h2>
+                    <p class="text-slate-300 text-sm sm:text-base mb-6" data-i18n="hero_desc">Real-time community reports from across Sri Lanka. Upvote accurate stocks and downvote spam to protect neighbors.</p>
+                    
+                    <div class="flex flex-wrap gap-3">
+                        <button onclick="openReportModal()" class="bg-white text-slate-900 hover:bg-emerald-50 font-bold px-5 py-2.5 rounded-xl text-sm shadow-md transition flex items-center">
+                            <i class="fa-solid fa-circle-plus text-emerald-600 mr-2"></i> <span data-i18n="btn_submit_report">Submit Live Report</span>
+                        </button>
+                        <a href="#feed-section" class="bg-emerald-700/60 hover:bg-emerald-700 text-white font-medium px-4 py-2.5 rounded-xl text-sm transition border border-emerald-600/50 flex items-center">
+                            <i class="fa-solid fa-list mr-2"></i> <span data-i18n="btn_view_feed">View Live Feed</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search and Filters Section -->
+            <div id="feed-section" class="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-xs border border-slate-200 dark:border-slate-800 space-y-4 transition-colors duration-200">
+                <div class="flex flex-col md:flex-row gap-4 justify-between items-center">
+                    <div class="relative w-full md:w-96">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-400"></i>
+                        <input type="text" id="search-input" oninput="filterAlerts()" placeholder="Search store name, city, or district..." data-i18n-placeholder="search_placeholder" class="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition">
+                    </div>
+
+                    <div class="flex flex-wrap gap-2 w-full md:w-auto items-center">
+                        <select id="filter-district" onchange="filterAlerts()" class="bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-sm rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600">
+                            <option value="" data-i18n="opt_all_districts">All Districts</option>
+                            <option value="Colombo">Colombo</option>
+                            <option value="Gampaha">Gampaha</option>
+                            <option value="Kalutara">Kalutara</option>
+                            <option value="Kandy">Kandy</option>
+                            <option value="Galle">Galle</option>
+                            <option value="Matara">Matara</option>
+                            <option value="Kurunegala">Kurunegala</option>
+                            <option value="Ratnapura">Ratnapura</option>
+                            <option value="Anuradhapura">Anuradhapura</option>
+                            <option value="Jaffna">Jaffna</option>
+                            <option value="Negombo">Negombo</option>
+                        </select>
+
+                        <select id="filter-item" onchange="filterAlerts()" class="bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-sm rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600">
+                            <option value="" data-i18n="opt_all_items">All Items</option>
+                            <option value="Litro 12.5kg">Litro 12.5kg</option>
+                            <option value="Litro 5kg">Litro 5kg</option>
+                            <option value="Laughfs 12.5kg">Laughfs 12.5kg</option>
+                            <option value="Laughfs 5kg">Laughfs 5kg</option>
+                            <option value="Kerosene">Kerosene (Liters)</option>
+                        </select>
+
+                        <select id="filter-status" onchange="filterAlerts()" class="bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-sm rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600">
+                            <option value="" data-i18n="opt_all_statuses">All Statuses</option>
+                            <option value="Available" data-i18n="status_available">Available (Green)</option>
+                            <option value="Limited" data-i18n="status_limited">Limited (Orange)</option>
+                            <option value="Finished" data-i18n="status_finished">Finished (Red)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Quick Filter Pills -->
+                <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+                    <span class="text-xs text-slate-400 font-medium shrink-0" data-i18n="quick_status">Quick Status:</span>
+                    <button onclick="setStatusFilter('')" class="px-3 py-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-full text-xs font-medium text-slate-700 dark:text-slate-300 transition" data-i18n="filter_all">All</button>
+                    <button onclick="setStatusFilter('Available')" class="px-3 py-1 bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 rounded-full text-xs font-semibold hover:bg-emerald-200 transition" data-i18n="pill_available">🟢 Available</button>
+                    <button onclick="setStatusFilter('Limited')" class="px-3 py-1 bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 rounded-full text-xs font-semibold hover:bg-amber-200 transition" data-i18n="pill_limited">🟠 Limited Stock</button>
+                    <button onclick="setStatusFilter('Finished')" class="px-3 py-1 bg-rose-100 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300 rounded-full text-xs font-semibold hover:bg-rose-200 transition" data-i18n="pill_finished">🔴 Finished / Over</button>
+                </div>
+            </div>
+
+            <!-- Feed Grid -->
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-bold text-slate-900 dark:text-white text-lg flex items-center">
+                        <i class="fa-solid fa-satellite-dish text-emerald-600 mr-2"></i> <span data-i18n="live_community_reports">Live Community Reports</span>
+                        <span id="results-count" class="ml-2 text-xs bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-2 py-0.5 rounded-full">0 reports</span>
+                    </h3>
+                    <span class="text-xs text-slate-400" data-i18n="auto_synced">Verified by community upvotes</span>
+                </div>
+
+                <div id="alerts-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Dynamic cards injected here -->
+                </div>
+
+                <!-- Empty State -->
+                <div id="empty-state" class="hidden text-center py-16 bg-white dark:bg-slate-900 rounded-2xl border border-dashed border-slate-300 dark:border-slate-800 mt-2">
+                    <div class="h-16 w-16 bg-slate-100 dark:bg-slate-800 text-slate-400 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </div>
+                    <h4 class="font-semibold text-slate-800 dark:text-slate-200 text-base" data-i18n="no_matching">No matching reports found</h4>
+                    <p class="text-slate-500 text-sm mt-1" data-i18n="no_matching_desc">Try adjusting your filters or search term, or report a new arrival.</p>
+                    <button onclick="openReportModal()" class="mt-4 bg-emerald-600 text-white font-medium px-4 py-2 rounded-xl text-sm shadow-xs hover:bg-emerald-700 transition" data-i18n="btn_add_report">
+                        Add New Report
+                    </button>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- ================= ADMIN VIEW (BACKEND) ================= -->
+        <div id="view-admin" class="space-y-6 hidden">
+            
+            <!-- Admin Header banner -->
+            <div class="bg-slate-900 dark:bg-slate-950 border border-slate-800 rounded-2xl p-6 sm:p-8 text-white shadow-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-red-500/20 text-red-300 border border-red-500/30 mb-3">
+                        <i class="fa-solid fa-lock text-xs"></i> <span data-i18n="restricted_admin">Restricted Admin Dashboard</span>
+                    </span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight" data-i18n="admin_control_center">System Control Center</h2>
+                    <p class="text-slate-400 text-sm mt-1" data-i18n="admin_desc">Verify user reports, review auto-flagged spam, and broadcast urgent push alerts to citizens.</p>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <button onclick="openBroadcastModal()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-4 py-2.5 rounded-xl text-sm shadow-md transition flex items-center">
+                        <i class="fa-solid fa-bullhorn mr-2"></i> <span data-i18n="btn_broadcast">Broadcast Alert</span>
+                    </button>
+                    <button onclick="switchView('user')" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium px-4 py-2.5 rounded-xl text-sm transition">
+                        <i class="fa-solid fa-arrow-left mr-2"></i> <span data-i18n="btn_exit_admin">Exit to User View</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Admin Stats Row -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider" data-i18n="stat_total">Total Reports Today</p>
+                        <h4 id="stat-total" class="text-2xl font-bold text-slate-900 dark:text-white mt-1">0</h4>
+                    </div>
+                    <div class="h-12 w-12 bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 rounded-xl flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-clipboard-list"></i>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider" data-i18n="stat_pending">Pending Verification</p>
+                        <h4 id="stat-pending" class="text-2xl font-bold text-amber-600 mt-1">0</h4>
+                    </div>
+                    <div class="h-12 w-12 bg-amber-50 dark:bg-amber-950 text-amber-600 rounded-xl flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider" data-i18n="stat_verified">Verified Stocks</p>
+                        <h4 id="stat-verified" class="text-2xl font-bold text-emerald-600 mt-1">0</h4>
+                    </div>
+                    <div class="h-12 w-12 bg-emerald-50 dark:bg-emerald-950 text-emerald-600 rounded-xl flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider" data-i18n="stat_flagged">Flagged / Spam</p>
+                        <h4 id="stat-flagged" class="text-2xl font-bold text-rose-600 mt-1">0</h4>
+                    </div>
+                    <div class="h-12 w-12 bg-rose-50 dark:bg-rose-950 text-rose-600 rounded-xl flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Management Table -->
+            <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-xs border border-slate-200 dark:border-slate-800 overflow-hidden">
+                <div class="p-5 border-b border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                    <div>
+                        <h3 class="font-bold text-slate-900 dark:text-white text-base" data-i18n="admin_all_submissions">All Community Submissions</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400" data-i18n="admin_sub_desc">Manage trust scores, verify, pin to top, or delete false reports instantly.</p>
+                    </div>
+                    <div class="flex items-center space-x-2 w-full sm:w-auto">
+                        <input type="text" id="admin-search" oninput="renderAdminTable()" placeholder="Search logs..." data-i18n-placeholder="search_logs" class="bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700 text-xs rounded-xl px-3 py-2 w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-slate-500/20">
+                        <button onclick="resetDemoData()" class="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold px-3 py-2 rounded-xl transition shrink-0" title="Reset default sample data">
+                            <i class="fa-solid fa-rotate-right mr-1"></i> <span data-i18n="btn_reset">Reset Data</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50 dark:bg-slate-800/50 text-slate-400 text-xs font-semibold uppercase border-b border-slate-200 dark:border-slate-800">
+                                <th class="py-3 px-4" data-i18n="th_store">Store & Location</th>
+                                <th class="py-3 px-4" data-i18n="th_item">Item Type</th>
+                                <th class="py-3 px-4" data-i18n="th_status">Status</th>
+                                <th class="py-3 px-4" data-i18n="th_trust_score">Trust Score (Votes)</th>
+                                <th class="py-3 px-4" data-i18n="th_admin_status">Admin Status</th>
+                                <th class="py-3 px-4 text-right" data-i18n="th_actions">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-table-body" class="divide-y divide-slate-100 dark:divide-slate-800 text-sm">
+                            <!-- Injected by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 mt-12 py-6 text-center text-xs text-slate-500 dark:text-slate-400 transition-colors duration-200">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <p data-i18n="footer_text">GasAlert Sri Lanka &copy; 2026. Crowdsourced Community Information System.</p>
+            <div class="flex items-center space-x-4">
+                <span class="flex items-center text-emerald-600 dark:text-emerald-400 font-medium"><i class="fa-solid fa-circle text-xs mr-1 text-emerald-500"></i> <span data-i18n="system_operational">System Operational</span></span>
+                <span>•</span>
+                <button onclick="promptAdminAccess()" class="hover:underline text-slate-600 dark:text-slate-400" data-i18n="admin_login_link">Admin Login</button>
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- ================= MODALS ================= -->
+
+    <!-- Report Arrival Modal -->
+    <div id="report-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 dark:border-slate-800 animate-in fade-in zoom-in-95 duration-200">
+            <div class="flex justify-between items-center mb-4 pb-2 border-b border-slate-100 dark:border-slate-800">
+                <h3 class="font-bold text-slate-900 dark:text-white text-lg flex items-center">
+                    <i class="fa-solid fa-circle-plus text-emerald-600 mr-2"></i> <span data-i18n="modal_report_title">Report Gas / Kerosene Stock</span>
+                </h3>
+                <button onclick="closeReportModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <form id="report-form" onsubmit="handleReportSubmit(event)" class="space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase mb-1" data-i18n="lbl_store">Store / Location Name *</label>
+                        <input type="text" id="rep-store" required placeholder="e.g., Sathosa Outlet, Filling Station" data-i18n-placeholder="ph_store" class="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase mb-1" data-i18n="lbl_district">District / City *</label>
+                        <input type="text" id="rep-district" required placeholder="e.g., Colombo 05, Gampaha" data-i18n-placeholder="ph_district" class="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase mb-1" data-i18n="lbl_item">Item Type *</label>
+                        <select id="rep-item" required class="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600">
+                            <option value="Litro 12.5kg">Litro 12.5kg Cylinder</option>
+                            <option value="Litro 5kg">Litro 5kg Cylinder</option>
+                            <option value="Laughfs 12.5kg">Laughfs 12.5kg Cylinder</option>
+                            <option value="Laughfs 5kg">Laughfs 5kg Cylinder</option>
+                            <option value="Kerosene">Kerosene (Liters)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase mb-1" data-i18n="lbl_status">Stock Status *</label>
+                        <select id="rep-status" required class="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600">
+                            <option value="Available" data-i18n="status_available_opt">🟢 Available (In Stock)</option>
+                            <option value="Limited" data-i18n="status_limited_opt">🟠 Limited Stock (Queue forming)</option>
+                            <option value="Finished" data-i18n="status_finished_opt">🔴 Finished / Out of Stock</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase mb-1" data-i18n="lbl_note">Note / Queue Details</label>
+                    <textarea id="rep-note" rows="3" placeholder="e.g., Around 50 cylinders left. Token system active. Queue is moving fast." data-i18n-placeholder="ph_note" class="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600"></textarea>
+                </div>
+
+                <div class="bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-900/50 rounded-xl p-3 text-xs text-amber-800 dark:text-amber-300 flex items-start space-x-2">
+                    <i class="fa-solid fa-triangle-exclamation mt-0.5 shrink-0"></i>
+                    <p data-i18n="modal_warning">Please only submit accurate reports. False or spam submissions will be automatically hidden by community downvotes.</p>
+                </div>
+
+                <div class="flex justify-end space-x-3 pt-2">
+                    <button type="button" onclick="closeReportModal()" class="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 text-sm font-medium transition" data-i18n="btn_cancel">Cancel</button>
+                    <button type="submit" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold shadow-sm transition" data-i18n="btn_submit_modal">Submit Live Report</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- Admin PIN / Login Modal -->
+    <div id="admin-login-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100 dark:border-slate-800 animate-in fade-in zoom-in-95 duration-200">
+            <div class="flex justify-between items-center mb-4 pb-2 border-b border-slate-100 dark:border-slate-800">
+                <h3 class="font-bold text-slate-900 dark:text-white text-lg flex items-center">
+                    <i class="fa-solid fa-shield-halved text-emerald-600 mr-2"></i> <span data-i18n="admin_login_title">Admin Portal Access</span>
+                </h3>
+                <button onclick="closeAdminLoginModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            
+            <p class="text-xs text-slate-500 dark:text-slate-400 mb-4"><span data-i18n="admin_login_desc">Enter the secure admin PIN to access dashboard controls and verification tools. (Default PIN:</span> <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded font-mono font-bold text-slate-800 dark:text-slate-200">1234</code>)</p>
+
+            <form onsubmit="handleAdminLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase mb-1" data-i18n="lbl_pin">Security PIN</label>
+                    <input type="password" id="admin-pin-input" required maxlength="6" placeholder="••••" class="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-center font-mono tracking-widest text-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600">
+                </div>
+                <div id="login-error" class="text-xs text-rose-600 hidden font-medium text-center" data-i18n="login_error">Incorrect PIN. Please try again (Demo PIN is 1234).</div>
+                <div class="flex justify-end space-x-3 pt-2">
+                    <button type="button" onclick="closeAdminLoginModal()" class="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 text-sm font-medium transition" data-i18n="btn_cancel">Cancel</button>
+                    <button type="submit" class="px-5 py-2.5 rounded-xl bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 text-white text-sm font-semibold shadow-sm transition" data-i18n="btn_authenticate">Authenticate</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- Broadcast Modal -->
+    <div id="broadcast-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100 dark:border-slate-800 animate-in fade-in zoom-in-95 duration-200">
+            <div class="flex justify-between items-center mb-4 pb-2 border-b border-slate-100 dark:border-slate-800">
+                <h3 class="font-bold text-slate-900 dark:text-white text-lg flex items-center">
+                    <i class="fa-solid fa-bullhorn text-amber-500 mr-2"></i> <span data-i18n="broadcast_modal_title">Broadcast Urgent Banner</span>
+                </h3>
+                <button onclick="closeBroadcastModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <form onsubmit="handleBroadcastSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase mb-1" data-i18n="lbl_announcement">Announcement Message *</label>
+                    <textarea id="broadcast-input" rows="3" required placeholder="e.g., Litro Gas mega shipment arrived at Pettah main depot..." data-i18n-placeholder="ph_announcement" class="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500"></textarea>
+                </div>
+                <div class="flex justify-end space-x-3 pt-2">
+                    <button type="button" onclick="closeBroadcastModal()" class="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 text-sm font-medium transition" data-i18n="btn_cancel">Cancel</button>
+                    <button type="submit" class="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-sm font-bold shadow-sm transition" data-i18n="btn_publish">Publish Broadcast</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 bg-slate-900 dark:bg-slate-800 text-white px-4 py-3 rounded-xl shadow-xl transform translate-y-20 opacity-0 transition-all duration-300 flex items-center space-x-3 text-sm border border-slate-700">
+        <i id="toast-icon" class="fa-solid fa-circle-check text-emerald-400 text-base"></i>
+        <span id="toast-message">Action completed successfully!</span>
+    </div>
+
+
+    <!-- JavaScript Application Logic with Multi-Language Dictionaries & Voting/Trust System -->
+    <script>
+        // Multi-Language Translations Dictionary (English, Sinhala, Tamil)
+        const translations = {
+            en: {
+                tagline: "Community Gas & Kerosene Radar",
+                nav_citizen: "Citizen Feed",
+                nav_admin: "Admin Portal",
+                btn_report: "Report Arrival",
+                hero_badge: "Crowdsourced Real-Time Updates",
+                hero_title: "Check Gas & Kerosene Stock Before You Queue",
+                hero_desc: "Real-time community reports from across Sri Lanka. Upvote accurate stocks and downvote spam to protect neighbors.",
+                btn_submit_report: "Submit Live Report",
+                btn_view_feed: "View Live Feed",
+                search_placeholder: "Search store name, city, or district...",
+                opt_all_districts: "All Districts",
+                opt_all_items: "All Items",
+                opt_all_statuses: "All Statuses",
+                status_available: "Available (Green)",
+                status_limited: "Limited (Orange)",
+                status_finished: "Finished (Red)",
+                quick_status: "Quick Status:",
+                filter_all: "All",
+                pill_available: "🟢 Available",
+                pill_limited: "🟠 Limited Stock",
+                pill_finished: "🔴 Finished / Over",
+                live_community_reports: "Live Community Reports",
+                auto_synced: "Verified by community upvotes",
+                no_matching: "No matching reports found",
+                no_matching_desc: "Try adjusting your filters or search term, or report a new arrival.",
+                btn_add_report: "Add New Report",
+                restricted_admin: "Restricted Admin Dashboard",
+                admin_control_center: "System Control Center",
+                admin_desc: "Verify user reports, review auto-flagged spam, and broadcast urgent push alerts to citizens.",
+                btn_broadcast: "Broadcast Alert",
+                btn_exit_admin: "Exit to User View",
+                stat_total: "Total Reports Today",
+                stat_pending: "Pending Verification",
+                stat_verified: "Verified Stocks",
+                stat_flagged: "Flagged / Spam",
+                admin_all_submissions: "All Community Submissions",
+                admin_sub_desc: "Manage trust scores, verify, pin to top, or delete false reports instantly.",
+                search_logs: "Search logs...",
+                btn_reset: "Reset Data",
+                th_store: "Store & Location",
+                th_item: "Item Type",
+                th_status: "Status",
+                th_trust_score: "Trust Score (Votes)",
+                th_admin_status: "Admin Status",
+                th_actions: "Actions",
+                footer_text: "GasAlert Sri Lanka © 2026. Crowdsourced Community Information System.",
+                system_operational: "System Operational",
+                admin_login_link: "Admin Login",
+                modal_report_title: "Report Gas / Kerosene Stock",
+                lbl_store: "Store / Location Name *",
+                ph_store: "e.g., Sathosa Outlet, Filling Station",
+                lbl_district: "District / City *",
+                ph_district: "e.g., Colombo 05, Gampaha",
+                lbl_item: "Item Type *",
+                lbl_status: "Stock Status *",
+                status_available_opt: "🟢 Available (In Stock)",
+                status_limited_opt: "🟠 Limited Stock (Queue forming)",
+                status_finished_opt: "🔴 Finished / Out of Stock",
+                lbl_note: "Note / Queue Details",
+                ph_note: "e.g., Around 50 cylinders left. Token system active. Queue is moving fast.",
+                modal_warning: "Please only submit accurate reports. False or spam submissions will be automatically hidden by community downvotes.",
+                btn_cancel: "Cancel",
+                btn_submit_modal: "Submit Live Report",
+                admin_login_title: "Admin Portal Access",
+                admin_login_desc: "Enter the secure admin PIN to access dashboard controls and verification tools. (Default PIN:",
+                lbl_pin: "Security PIN",
+                login_error: "Incorrect PIN. Please try again (Demo PIN is 1234).",
+                btn_authenticate: "Authenticate",
+                broadcast_modal_title: "Broadcast Urgent Banner",
+                lbl_announcement: "Announcement Message *",
+                ph_announcement: "e.g., Litro Gas mega shipment arrived at Pettah main depot...",
+                btn_publish: "Publish Broadcast",
+                pinned_update: "Pinned Update",
+                confirm_label: "Confirm",
+                false_label: "Fake/Spam",
+                just_now: "Just now",
+                auto_hidden_note: "Hidden due to excessive community downvotes (Spam protection)"
+            },
+            si: {
+                tagline: "ප්‍රජා ගෑස් සහ භූමිතෙල් රැඩාර් පද්ධතිය",
+                nav_citizen: "පුරවැසි පුවත්පත",
+                nav_admin: "පරිපාලක ද්වාරය",
+                btn_report: "තොග වාර්තා කරන්න",
+                hero_badge: "ජනතා දායකත්වයෙන් තත්‍ය කාලීන යාවත්කාලීන කිරීම්",
+                hero_title: "පෝලිම්වල පැය ගණන් රැඳීමට පෙර ගෑස් සහ භූමිතෙල් තොග පරීක්ෂා කරන්න",
+                hero_desc: "ශ්‍රී ලංකාව පුරා සිටින ජනතාවගේ තත්‍ය කාලීන වාර්තා. නිවැරදි තොග තහවුරු කරන්න සහ අසත්‍ය තොරතුරු ඉවත් කරන්න.",
+                btn_submit_report: "වාර්තාවක් එකතු කරන්න",
+                btn_view_feed: "සජීවී පුවත් බලන්න",
+                search_placeholder: "ගබඩාවේ නම, නගරය හෝ දිස්ත්‍රික්කය සෙවීම...",
+                opt_all_districts: "සියලුම දිස්ත්‍රික්ක",
+                opt_all_items: "සියලුම භාණ්ඩ",
+                opt_all_statuses: "සියලුම තත්ත්වයන්",
+                status_available: "ඇත (කොළ)",
+                status_limited: "සීමිතයි (දොඩම්)",
+                status_finished: "අසම්පූර්ණයි/අවර (රතු)",
+                quick_status: "ක්ෂණික තත්ත්වය:",
+                filter_all: "සියල්ල",
+                pill_available: "🟢 ලබාගත හැක",
+                pill_limited: "🟠 සීමිත තොග",
+                pill_finished: "🔴 අවසන් වී ඇත",
+                live_community_reports: "සජීවී ප්‍රජා වාර්තා",
+                auto_synced: "ප්‍රජා ඡන්ද මඟින් තහවුරු කරන ලදී",
+                no_matching: "ගැලපෙන වාර්තා හමු නොවීය",
+                no_matching_desc: "ඔබගේ පෙරහන් හෝ සෙවුම් පදය වෙනස් කර උත්සාහ කරන්න.",
+                btn_add_report: "නව වාර්තාවක් එක් කරන්න",
+                restricted_admin: "සීමිත පරිපාලක පාලන පුවරුව",
+                admin_control_center: "පද්ධති පාලන මධ්‍යස්ථානය",
+                admin_desc: "පරිශීලක වාර්තා සත්‍යාපනය කරන්න, ස්වයංක්‍රීයව අත්හිටවූ ස්පෑම් සමාලෝචනය කරන්න සහ හදිසි දැනුම්දීම් නිකුත් කරන්න.",
+                btn_broadcast: "දැනුම්දීමක් විකාශය කරන්න",
+                btn_exit_admin: "පුරවැසි දර්ශනයට යන්න",
+                stat_total: "අද මුළු වාර්තා",
+                stat_pending: "සත්‍යාපනය අපේක්ෂිත",
+                stat_verified: "සත්‍යාපිත තොග",
+                stat_flagged: "වාර්තා කළ/ස්පෑම්",
+                admin_all_submissions: "සියලුම ප්‍රජා ඉදිරිපත් කිරීම්",
+                admin_sub_desc: "විශ්වාසනීය ලකුණු කළමනාකරණය කරන්න, තහවුරු කරන්න හෝ මකා දමන්න.",
+                search_logs: "වාර්තා සෙවීම...",
+                btn_reset: "දත්ත යළි පිහිටුවන්න",
+                th_store: "ගබඩාව සහ ස්ථානය",
+                th_item: "භාණ්ඩ වර්ගය",
+                th_status: "තත්ත්වය",
+                th_trust_score: "විශ්වාසනීය ලකුණු (ඡන්ද)",
+                th_admin_status: "පරිපාලක තත්ත්වය",
+                th_actions: "ක්‍රියාමාර්ග",
+                footer_text: "GasAlert Sri Lanka © 2026. ප්‍රජා තොරතුරු පද්ධතිය.",
+                system_operational: "පද්ධතිය ක්‍රියාත්මකයි",
+                admin_login_link: "පරිපාලක පිවිසුම",
+                modal_report_title: "ගෑස් / භූමිතෙල් තොග වාර්තා කරන්න",
+                lbl_store: "ගබඩාව / ස්ථානයේ නම *",
+                ph_store: "උදා: සතොස අලෙවිසැල, පිරවුම්හල",
+                lbl_district: "දිස්ත්‍රික්කය / නගරය *",
+                ph_district: "උදා: කොළඹ 05, ගම්පහ",
+                lbl_item: "භාණ්ඩ වර්ගය *",
+                lbl_status: "තොග තත්ත්වය *",
+                status_available_opt: "🟢 ලබාගත හැක (තොග ඇත)",
+                status_limited_opt: "🟠 සීමිත තොග (පෝලිම් හැදෙමින් පවතී)",
+                status_finished_opt: "🔴 අවසන් / තොග නොමැත",
+                lbl_note: "සටහන / පෝලිම් විස්තර",
+                ph_note: "උදා: සිලින්ඩර් 50ක් පමණ ඉතිරිව ඇත. ටෝකන් ක්‍රමය ක්‍රියාත්මකයි.",
+                modal_warning: "කරුණාකර නිවැරදි තොරතුරු පමණක් ඇතුළත් කරන්න. වැරදි තොරතුරු ප්‍රජා ඡන්ද මඟින් ස්වයංක්‍රීයව සැඟවෙනු ඇත.",
+                btn_cancel: "අවලංගු කරන්න",
+                btn_submit_modal: "වාර්තාව ඉදිරිපත් කරන්න",
+                admin_login_title: "පරිපාලක ද්වාර පිවිසුම",
+                admin_login_desc: "පාලන මෙවලම් වෙත ප්‍රවේශ වීමට ආරක්ෂිත PIN අංකය ඇතුළත් කරන්න. (පෙරනිමි PIN අංකය:",
+                lbl_pin: "ආරක්ෂක PIN අංකය",
+                login_error: "වැරදි PIN අංකයකි. කරුණාකර නැවත උත්සාහ කරන්න (Demo PIN: 1234).",
+                btn_authenticate: "තහවුරු කරන්න",
+                broadcast_modal_title: "හදිසි නිවේදනයක් නිකුත් කරන්න",
+                lbl_announcement: "නිවේදන පණිවිඩය *",
+                ph_announcement: "උදා: ලිත්‍රෝ ගෑස් ප්‍රධාන නැව්ගත කිරීම පිටකොටුව ගබඩාවට පැමිණ ඇත...",
+                btn_publish: "ප්‍රකාශයට පත් කරන්න",
+                pinned_update: "ප්‍රධාන යාවත්කාලීන කිරීම",
+                confirm_label: "තහවුරු කරන්න",
+                false_label: "අසත්‍ය/ස්පෑම්",
+                just_now: "දැන්",
+                auto_hidden_note: "අධික ප්‍රජා විරෝධතා ඡන්ද හේතුවෙන් සැඟවී ඇත (ස්පෑම් ආරක්ෂණය)"
+            },
+            ta: {
+                tagline: "சமூக எரிவாயு மற்றும் மண்ணெண்ணெய் ரேடார்",
+                nav_citizen: "குடிமக்கள் ஊட்டம்",
+                nav_admin: "நிர்வாக போர்டல்",
+                btn_report: "வருகையைப் புகாரளி",
+                hero_badge: "நிகழ்நேர சமுதாய புதுப்பிப்புகள்",
+                hero_title: "வரிசையில் நிற்கும் முன் எரிவாயு மற்றும் மண்ணெண்ணெய் இருப்பைச் சரிபார்க்கவும்",
+                hero_desc: "இலங்கை முழுவதிலுமிருந்து நிகழ்நேர சமூக அறிக்கைகள். துல்லியமான இருப்பை உறுதிப்படுத்தவும், ஸ்பேம் தகவல்களை விலக்கவும்.",
+                btn_submit_report: "நேரலை அறிக்கையைச் சமர்ப்பிக்கவும்",
+                btn_view_feed: "நேரலை ஊட்டம்",
+                search_placeholder: "கடை பெயர், நகரம் அல்லது மாவட்டத்தைத் தேடவும்...",
+                opt_all_districts: "அனைத்து மாவட்டங்களும்",
+                opt_all_items: "அனைத்துப் பொருட்களும்",
+                opt_all_statuses: "அனைத்து நிலைகளும்",
+                status_available: "கிடைக்கிறது (பச்சை)",
+                status_limited: "పరిమితం (ஆரஞ்சு)",
+                status_finished: "முடிந்தது (சிவப்பு)",
+                quick_status: "விரைவு நிலை:",
+                filter_all: "அனைத்தும்",
+                pill_available: "🟢 கிடைக்கிறது",
+                pill_limited: "🟠 வரையறுக்கப்பட்ட",
+                pill_finished: "🔴 முடிந்தது",
+                live_community_reports: "நேரலை சமூக அறிக்கைகள்",
+                auto_synced: "சமூக வாக்களிப்பு மூலம் சரிபார்க்கப்பட்டது",
+                no_matching: "பொருந்தும் அறிக்கைகள் எதுவும் கிடைக்கவில்லை",
+                no_matching_desc: "உங்கள் வடிப்பான்களை அல்லது தேடல் சொல்லைச் சரிசெய்ய முயற்சிக்கவும்.",
+                btn_add_report: "புதிய அறிக்கையைச் சேர்",
+                restricted_admin: "கட்டுப்படுத்தப்பட்ட நிர்வாக டாஷ்போர்டு",
+                admin_control_center: "அமைப்பு கட்டுப்பாட்டு மையம்",
+                admin_desc: "பயனர் அறிக்கைகளைச் சரிபார்க்கவும், ஸ்பேம் அறிக்கைகளைக் கண்காணிக்கவும், குடிமக்களுக்கு அவசர எச்சரிக்கைகளை ஒளிபரப்பவும்.",
+                btn_broadcast: "எச்சரிக்கையை ஒளிபரப்பு",
+                btn_exit_admin: "பயனர் காட்சிக்கு செல்",
+                stat_total: "இன்றைய மொத்த அறிக்கைகள்",
+                stat_pending: "சரிபார்ப்பு நிலுவையில் உள்ளது",
+                stat_verified: "சரிபார்க்கப்பட்ட பங்குகள்",
+                stat_flagged: "கொடியிடப்பட்ட / ஸ்பேம்",
+                admin_all_submissions: "அனைத்து சமூக சமர்ப்பிப்புகளும்",
+                admin_sub_desc: "நம்பகத்தன்மை மதிப்பெண்களை நிர்வகிக்கவும், சரிபார்க்கவும் அல்லது நீக்கவும்.",
+                search_logs: "பதிவுகளைத் தேடு...",
+                btn_reset: "தரவை மீட்டமை",
+                th_store: "கடை மற்றும் இருப்பிடம்",
+                th_item: "உருப்படி வகை",
+                th_status: "நிலை",
+                th_trust_score: "நம்பகத்தன்மை மதிப்பெண் (வாக்குகள்)",
+                th_admin_status: "நிர்வாக நிலை",
+                th_actions: "செயல்கள்",
+                footer_text: "GasAlert Sri Lanka © 2026. சமூக தகவல் அமைப்பு.",
+                system_operational: "அமைப்பு செயல்பாட்டில் உள்ளது",
+                admin_login_link: "நிர்வாக உள்நுழைவு",
+                modal_report_title: "எரிவாயு / மண்ணெண்ணெய் இருப்பைப் புகாரளி",
+                lbl_store: "கடை / இருப்பிடப் பெயர் *",
+                ph_store: "எ.கா: சதொச அங்காடி, எரிபொருள் நிலையம்",
+                lbl_district: "மாவட்டம் / நகரம் *",
+                ph_district: "எ.கா: கொழும்பு 05, கம்பஹா",
+                lbl_item: "உருப்படி வகை *",
+                lbl_status: "பங்கு நிலை *",
+                status_available_opt: "🟢 கிடைக்கிறது (இருப்பில் உள்ளது)",
+                status_limited_opt: "🟠 வரையறுக்கப்பட்ட பங்கு (வரிசை உருவாகிறது)",
+                status_finished_opt: "🔴 முடிந்தது / பங்கு இல்லை",
+                lbl_note: "குறிப்பு / வரிசை விவரங்கள்",
+                ph_note: "எ.கா: சுமார் 50 சிலிண்டர்கள் மீதமுள்ளன. டோக்கன் முறை செயலில் உள்ளது.",
+                modal_warning: "துல்லியமான அறிக்கைகளை மட்டுமே சமர்ப்பிக்கவும். தவறான தகவல்கள் சமூக வாக்களிப்பு மூலம் தானாக மறைக்கப்படும்.",
+                btn_cancel: "ரத்து செய்",
+                btn_submit_modal: "நேரலை அறிக்கையைச் சமர்ப்பிக்கவும்",
+                admin_login_title: "நிர்வாக போர்டல் அணுகல்",
+                admin_login_desc: "கட்டுப்பாட்டு கருவிகளை அணுக பாதுகாப்பான PIN ஐ உள்ளிடவும். (இயல்புநிலை PIN:",
+                lbl_pin: "பாதுகாப்பு PIN",
+                login_error: "தவறான PIN. மீண்டும் முயற்சிக்கவும் (Demo PIN: 1234).",
+                btn_authenticate: "உள்நுழை",
+                broadcast_modal_title: "அவசர பதாகையை ஒளிபரப்பு",
+                lbl_announcement: "அறிவிப்பு செய்தி *",
+                ph_announcement: "எ.கா: பெட்டாஹ்கோடி குடோனுக்கு லிட்ரோ கேஸ் கப்பல் வந்துள்ளது...",
+                btn_publish: "ஒளிபரப்பைக் প্রকাশ செய்",
+                pinned_update: "pinned புதுப்பிப்பு",
+                confirm_label: "உறுதிப்படுத்து",
+                false_label: "போலி/ஸ்பேம்",
+                just_now: "இப்போது",
+                auto_hidden_note: "அதிகப்படியான எதிர்ப்பு வாக்குகளால் மறைக்கப்பட்டது (ஸ்பேம் பாதுகாப்பு)"
+            }
+        };
+
+        let currentLang = localStorage.getItem('gasalert_lang') || 'en';
+        let currentTheme = localStorage.getItem('gasalert_theme') || 'light';
+
+        // Initial Mock Data with upvotes and downvotes
+        const defaultAlerts = [
+            {
+                id: '1',
+                store: 'Litro Gas Main Distributor',
+                district: 'Colombo 05',
+                item: 'Litro 12.5kg',
+                status: 'Available',
+                note: 'Queue is about 30 people right now. Cylinders available in sufficient quantity.',
+                time: '12 mins ago',
+                upvotes: 28,
+                downvotes: 1,
+                verified: true,
+                pinned: true,
+                flagged: false
+            },
+            {
+                id: '2',
+                store: 'Ceypetco Filling Station',
+                district: 'Gampaha',
+                item: 'Kerosene',
+                status: 'Limited',
+                note: 'Only 500L remaining. Bring your own 5L cans.',
+                time: '35 mins ago',
+                upvotes: 16,
+                downvotes: 2,
+                verified: true,
+                pinned: false,
+                flagged: false
+            },
+            {
+                id: '3',
+                store: 'Laughfs Gas Agent',
+                district: 'Nugegoda',
+                item: 'Laughfs 12.5kg',
+                status: 'Finished',
+                note: 'Stock finished around 10 AM. Next truck expected tomorrow morning.',
+                time: '1 hour ago',
+                upvotes: 12,
+                downvotes: 0,
+                verified: false,
+                pinned: false,
+                flagged: false
+            },
+            {
+                id: '4',
+                store: 'Sathosa Supermarket',
+                district: 'Kandy',
+                item: 'Litro 5kg',
+                status: 'Available',
+                note: 'Fresh stock arrived. Token system is being managed by police.',
+                time: '2 hours ago',
+                upvotes: 35,
+                downvotes: 2,
+                verified: true,
+                pinned: false,
+                flagged: false
+            }
+        ];
+
+        let alerts = JSON.parse(localStorage.getItem('gasalert_items')) || defaultAlerts;
+        let activeStatusFilter = '';
+        let currentBroadcast = localStorage.getItem('gasalert_broadcast') || '';
+
+        // Initialize App on Load
+        window.onload = function() {
+            applyTheme(currentTheme);
+            document.getElementById('language-select').value = currentLang;
+            applyTranslations();
+            if (currentBroadcast) {
+                document.getElementById('broadcast-text').innerText = currentBroadcast;
+                document.getElementById('broadcast-banner').classList.remove('hidden');
+            }
+            renderUserFeed();
+            renderAdminTable();
+            updateStats();
+        };
+
+        // Theme Toggle Handler
+        function toggleTheme() {
+            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+            localStorage.setItem('gasalert_theme', currentTheme);
+            applyTheme(currentTheme);
+        }
+
+        function applyTheme(theme) {
+            const root = document.documentElement;
+            const themeIcon = document.getElementById('theme-icon');
+            if (theme === 'dark') {
+                root.classList.add('dark');
+                themeIcon.className = "fa-solid fa-sun text-amber-400";
+            } else {
+                root.classList.remove('dark');
+                themeIcon.className = "fa-solid fa-moon text-slate-700";
+            }
+        }
+
+        // Language Switcher Handler
+        function changeLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('gasalert_lang', lang);
+            applyTranslations();
+            renderUserFeed();
+            renderAdminTable();
+        }
+
+        // Apply translations to data-i18n elements
+        function applyTranslations() {
+            const dict = translations[currentLang] || translations['en'];
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (dict[key]) {
+                    el.innerText = dict[key];
+                }
+            });
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if (dict[key]) {
+                    el.placeholder = dict[key];
+                }
+            });
+        }
+
+        // Save to LocalStorage
+        function saveData() {
+            localStorage.setItem('gasalert_items', JSON.stringify(alerts));
+            renderUserFeed();
+            renderAdminTable();
+            updateStats();
+        }
+
+        // View Switching
+        function switchView(view) {
+            const userView = document.getElementById('view-user');
+            const adminView = document.getElementById('view-admin');
+            const btnUser = document.getElementById('btn-user-view');
+            const btnAdmin = document.getElementById('btn-admin-view');
+
+            if (view === 'user') {
+                userView.classList.remove('hidden');
+                adminView.classList.add('hidden');
+                btnUser.className = "px-3 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs";
+                btnAdmin.className = "px-3 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white";
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else if (view === 'admin') {
+                userView.classList.add('hidden');
+                adminView.classList.remove('hidden');
+                btnAdmin.className = "px-3 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition bg-slate-900 dark:bg-slate-800 text-white shadow-xs";
+                btnUser.className = "px-3 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white";
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        // Admin Prompt & Authentication
+        function promptAdminAccess() {
+            document.getElementById('admin-pin-input').value = '';
+            document.getElementById('login-error').classList.add('hidden');
+            document.getElementById('admin-login-modal').classList.remove('hidden');
+        }
+
+        function closeAdminLoginModal() {
+            document.getElementById('admin-login-modal').classList.add('hidden');
+        }
+
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            const pin = document.getElementById('admin-pin-input').value;
+            if (pin === '1234') {
+                closeAdminLoginModal();
+                switchView('admin');
+                showToast('Admin authenticated successfully!', 'success');
+            } else {
+                document.getElementById('login-error').classList.remove('hidden');
+            }
+        }
+
+        // Render User Feed with Trust Score & Spam Auto-Hiding Rules
+        function renderUserFeed() {
+            const grid = document.getElementById('alerts-grid');
+            const emptyState = document.getElementById('empty-state');
+            const search = document.getElementById('search-input').value.toLowerCase();
+            const districtFilter = document.getElementById('filter-district').value.toLowerCase();
+            const itemFilter = document.getElementById('filter-item').value.toLowerCase();
+            const statusFilter = document.getElementById('filter-status').value.toLowerCase();
+
+            // Filter out flagged items or items where net score (upvotes - downvotes) <= -3 (auto-spam protection)
+            let filtered = alerts.filter(item => {
+                if (item.flagged) return false;
+                const netScore = (item.upvotes || 0) - (item.downvotes || 0);
+                if (netScore <= -3) {
+                    item.flagged = true; // Auto-flag
+                    return false;
+                }
+                return true;
+            });
+
+            if (search) {
+                filtered = filtered.filter(item => 
+                    item.store.toLowerCase().includes(search) || 
+                    item.district.toLowerCase().includes(search) ||
+                    item.item.toLowerCase().includes(search)
+                );
+            }
+
+            if (districtFilter) {
+                filtered = filtered.filter(item => item.district.toLowerCase().includes(districtFilter));
+            }
+
+            if (itemFilter) {
+                filtered = filtered.filter(item => item.item.toLowerCase().includes(itemFilter));
+            }
+
+            if (activeStatusFilter || statusFilter) {
+                const s = activeStatusFilter || statusFilter;
+                filtered = filtered.filter(item => item.status.toLowerCase() === s.toLowerCase());
+            }
+
+            // Sort pinned first, then by net trust score descending
+            filtered.sort((a, b) => {
+                if (b.pinned !== a.pinned) return (b.pinned === true) - (a.pinned === true);
+                return ((b.upvotes - b.downvotes) - (a.upvotes - a.downvotes));
+            });
+
+            const dict = translations[currentLang] || translations['en'];
+            document.getElementById('results-count').innerText = `${filtered.length} reports`;
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            grid.innerHTML = filtered.map(item => {
+                let badgeColor = 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-900';
+                let iconClass = 'fa-circle-check text-emerald-600 dark:text-emerald-400';
+                if (item.status === 'Limited') {
+                    badgeColor = 'bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border-amber-200 dark:border-amber-900';
+                    iconClass = 'fa-triangle-exclamation text-amber-600 dark:text-amber-400';
+                } else if (item.status === 'Finished') {
+                    badgeColor = 'bg-rose-100 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300 border-rose-200 dark:border-rose-900';
+                    iconClass = 'fa-circle-xmark text-rose-600 dark:text-rose-400';
+                }
+
+                const netScore = (item.upvotes || 0) - (item.downvotes || 0);
+
+                return `
+                    <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border ${item.pinned ? 'border-emerald-500 ring-2 ring-emerald-500/10' : 'border-slate-200 dark:border-slate-800'} shadow-xs hover:shadow-md transition flex flex-col justify-between relative overflow-hidden">
+                        ${item.pinned ? `<div class="absolute top-0 right-0 bg-emerald-600 text-white text-[10px] font-bold px-3 py-0.5 rounded-bl-xl shadow-xs"><i class="fa-solid fa-thumbtack mr-1"></i> ${dict.pinned_update || 'Pinned Update'}</div>` : ''}
+                        
+                        <div>
+                            <div class="flex items-start justify-between gap-2 mb-3">
+                                <div>
+                                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center mb-1">
+                                        <i class="fa-solid fa-location-dot text-emerald-600 dark:text-emerald-400 mr-1.5"></i> ${item.district}
+                                    </span>
+                                    <h4 class="font-bold text-slate-900 dark:text-white text-base leading-snug">${item.store}</h4>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-wrap items-center gap-2 mb-3">
+                                <span class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">
+                                    <i class="fa-solid fa-box text-slate-500 mr-1"></i> ${item.item}
+                                </span>
+                                <span class="px-2.5 py-1 rounded-lg text-xs font-bold border ${badgeColor} flex items-center">
+                                    <i class="fa-solid ${iconClass} mr-1"></i> ${item.status}
+                                </span>
+                            </div>
+
+                            <p class="text-slate-600 dark:text-slate-300 text-sm mb-4 bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl border border-slate-100 dark:border-slate-800">${item.note || 'No additional notes provided.'}</p>
+                        </div>
+
+                        <!-- Trust Score Voting Buttons -->
+                        <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                            <span class="flex items-center"><i class="fa-regular fa-clock mr-1"></i> ${item.time}</span>
+                            
+                            <div class="flex items-center space-x-1.5">
+                                <!-- Upvote Button -->
+                                <button onclick="voteAlert('${item.id}', 'up')" class="flex items-center space-x-1 bg-emerald-50 dark:bg-emerald-950/60 hover:bg-emerald-100 dark:hover:bg-emerald-900 text-emerald-800 dark:text-emerald-300 font-semibold px-2.5 py-1.5 rounded-lg transition active:scale-95 border border-emerald-200 dark:border-emerald-900" title="Confirm accurate stock">
+                                    <i class="fa-solid fa-thumbs-up"></i>
+                                    <span>${item.upvotes || 0}</span>
+                                </button>
+                                <!-- Downvote Button -->
+                                <button onclick="voteAlert('${item.id}', 'down')" class="flex items-center space-x-1 bg-rose-50 dark:bg-rose-950/60 hover:bg-rose-100 dark:hover:bg-rose-900 text-rose-700 dark:text-rose-300 font-semibold px-2.5 py-1.5 rounded-lg transition active:scale-95 border border-rose-200 dark:border-rose-900" title="Report as fake or spam">
+                                    <i class="fa-solid fa-thumbs-down"></i>
+                                    <span>${item.downvotes || 0}</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function filterAlerts() {
+            renderUserFeed();
+        }
+
+        function setStatusFilter(status) {
+            activeStatusFilter = status;
+            document.getElementById('filter-status').value = status;
+            renderUserFeed();
+        }
+
+        // Upvote / Downvote Trust Mechanism
+        function voteAlert(id, type) {
+            const item = alerts.find(a => a.id === id);
+            if (item) {
+                if (type === 'up') {
+                    item.upvotes = (item.upvotes || 0) + 1;
+                    showToast('Thank you! Stock status confirmed.', 'success');
+                } else if (type === 'down') {
+                    item.downvotes = (item.downvotes || 0) + 1;
+                    showToast('Feedback recorded. Thank you for keeping feed clean.', 'warning');
+                    const netScore = item.upvotes - item.downvotes;
+                    if (netScore <= -3) {
+                        item.flagged = true;
+                        showToast('Alert automatically hidden due to excessive negative votes.', 'warning');
+                    }
+                }
+                saveData();
+            }
+        }
+
+        // Modal Controls for Report
+        function openReportModal() {
+            document.getElementById('report-form').reset();
+            document.getElementById('report-modal').classList.remove('hidden');
+        }
+
+        function closeReportModal() {
+            document.getElementById('report-modal').classList.add('hidden');
+        }
+
+        function handleReportSubmit(e) {
+            e.preventDefault();
+            const newReport = {
+                id: Date.now().toString(),
+                store: document.getElementById('rep-store').value,
+                district: document.getElementById('rep-district').value,
+                item: document.getElementById('rep-item').value,
+                status: document.getElementById('rep-status').value,
+                note: document.getElementById('rep-note').value,
+                time: translations[currentLang].just_now || 'Just now',
+                upvotes: 1,
+                downvotes: 0,
+                verified: false,
+                pinned: false,
+                flagged: false
+            };
+
+            alerts.unshift(newReport);
+            saveData();
+            closeReportModal();
+            showToast('Live report successfully submitted to community!', 'success');
+        }
+
+        // Admin Table & Management
+        function renderAdminTable() {
+            const tbody = document.getElementById('admin-table-body');
+            const search = document.getElementById('admin-search').value.toLowerCase();
+
+            let list = alerts;
+            if (search) {
+                list = list.filter(item => item.store.toLowerCase().includes(search) || item.district.toLowerCase().includes(search));
+            }
+
+            if (list.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-slate-400">No reports found.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = list.map(item => {
+                const netScore = (item.upvotes || 0) - (item.downvotes || 0);
+                return `
+                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition ${item.flagged ? 'bg-rose-50/50 dark:bg-rose-950/20' : ''}">
+                        <td class="py-3 px-4">
+                            <div class="font-bold text-slate-900 dark:text-white">${item.store}</div>
+                            <div class="text-xs text-slate-500 dark:text-slate-400">${item.district} • ${item.time}</div>
+                        </td>
+                        <td class="py-3 px-4 font-medium text-slate-700 dark:text-slate-300">${item.item}</td>
+                        <td class="py-3 px-4">
+                            <span class="px-2 py-0.5 rounded text-xs font-semibold ${item.status === 'Available' ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300' : item.status === 'Limited' ? 'bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300' : 'bg-rose-100 dark:bg-rose-950 text-rose-800 dark:text-rose-300'}">
+                                ${item.status}
+                            </span>
+                        </td>
+                        <td class="py-3 px-4 font-semibold text-slate-700 dark:text-slate-300">
+                            <span class="text-emerald-600 dark:text-emerald-400">+${item.upvotes || 0}</span> / <span class="text-rose-600">-${item.downvotes || 0}</span> (Net: ${netScore})
+                        </td>
+                        <td class="py-3 px-4">
+                            ${item.flagged ? '<span class="px-2 py-0.5 rounded bg-rose-100 dark:bg-rose-950 text-rose-800 dark:text-rose-300 text-xs font-bold">Spam / Hidden</span>' : item.verified ? '<span class="px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 text-xs font-bold">Verified</span>' : '<span class="px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 text-xs font-bold">Pending</span>'}
+                        </td>
+                        <td class="py-3 px-4 text-right space-x-1">
+                            <button onclick="togglePin('${item.id}')" class="p-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg text-xs transition" title="${item.pinned ? 'Unpin' : 'Pin to top'}">
+                                <i class="fa-solid fa-thumbtack ${item.pinned ? 'text-emerald-600 dark:text-emerald-400' : ''}"></i>
+                            </button>
+                            <button onclick="toggleVerify('${item.id}')" class="p-1.5 bg-emerald-50 dark:bg-emerald-950 hover:bg-emerald-100 dark:hover:bg-emerald-900 text-emerald-700 dark:text-emerald-300 rounded-lg text-xs transition" title="Verify Report">
+                                <i class="fa-solid fa-check"></i>
+                            </button>
+                            <button onclick="toggleFlag('${item.id}')" class="p-1.5 bg-amber-50 dark:bg-amber-950 hover:bg-amber-100 dark:hover:bg-amber-900 text-amber-700 dark:text-amber-300 rounded-lg text-xs transition" title="Flag as Spam">
+                                <i class="fa-solid fa-flag"></i>
+                            </button>
+                            <button onclick="deleteAlert('${item.id}')" class="p-1.5 bg-rose-50 dark:bg-rose-950 hover:bg-rose-100 dark:hover:bg-rose-900 text-rose-700 dark:text-rose-300 rounded-lg text-xs transition" title="Delete Report">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function updateStats() {
+            document.getElementById('stat-total').innerText = alerts.length;
+            document.getElementById('stat-pending').innerText = alerts.filter(a => !a.verified && !a.flagged).length;
+            document.getElementById('stat-verified').innerText = alerts.filter(a => a.verified).length;
+            document.getElementById('stat-flagged').innerText = alerts.filter(a => a.flagged).length;
+        }
+
+        // Admin Actions
+        function togglePin(id) {
+            const item = alerts.find(a => a.id === id);
+            if (item) {
+                item.pinned = !item.pinned;
+                saveData();
+                showToast(item.pinned ? 'Alert pinned to top of feed' : 'Alert unpinned', 'success');
+            }
+        }
+
+        function toggleVerify(id) {
+            const item = alerts.find(a => a.id === id);
+            if (item) {
+                item.verified = !item.verified;
+                item.flagged = false;
+                saveData();
+                showToast('Report verification status updated', 'success');
+            }
+        }
+
+        function toggleFlag(id) {
+            const item = alerts.find(a => a.id === id);
+            if (item) {
+                item.flagged = !item.flagged;
+                saveData();
+                showToast('Report flagged/unflagged as spam', 'success');
+            }
+        }
+
+        function deleteAlert(id) {
+            if (confirm('Are you sure you want to permanently delete this report?')) {
+                alerts = alerts.filter(a => a.id !== id);
+                saveData();
+                showToast('Report deleted successfully', 'success');
+            }
+        }
+
+        function resetDemoData() {
+            if (confirm('Reset to default sample reports?')) {
+                alerts = [...defaultAlerts];
+                saveData();
+                showToast('Demo data restored', 'success');
+            }
+        }
+
+        // Broadcast Banner Controls
+        function openBroadcastModal() {
+            document.getElementById('broadcast-modal').classList.remove('hidden');
+        }
+
+        function closeBroadcastModal() {
+            document.getElementById('broadcast-modal').classList.add('hidden');
+        }
+
+        function handleBroadcastSubmit(e) {
+            e.preventDefault();
+            const msg = document.getElementById('broadcast-input').value;
+            currentBroadcast = msg;
+            localStorage.setItem('gasalert_broadcast', msg);
+            document.getElementById('broadcast-text').innerText = msg;
+            document.getElementById('broadcast-banner').classList.remove('hidden');
+            closeBroadcastModal();
+            showToast('Urgent broadcast banner published to all citizens!', 'success');
+        }
+
+        function dismissBroadcast() {
+            document.getElementById('broadcast-banner').classList.add('hidden');
+            currentBroadcast = '';
+            localStorage.removeItem('gasalert_broadcast');
+        }
+
+        // Toast Notification Helper
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-message');
+            const toastIcon = document.getElementById('toast-icon');
+
+            toastMsg.innerText = message;
+            if (type === 'success') {
+                toastIcon.className = "fa-solid fa-circle-check text-emerald-400 text-base";
+            } else {
+                toastIcon.className = "fa-solid fa-triangle-exclamation text-amber-400 text-base";
+            }
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
