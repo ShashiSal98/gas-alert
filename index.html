@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GasAlert Sri Lanka - Community Gas & Kerosene Tracker</title>
+    <title>GasAlert Sri Lanka - Verified Merchant & Community Gas Tracker</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -57,7 +57,7 @@
                 </div>
                 <div>
                     <h1 class="font-bold text-lg text-slate-900 dark:text-white tracking-tight leading-none">GasAlert <span class="text-xs px-2 py-0.5 bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 rounded-full font-semibold ml-1">LK</span></h1>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5" data-i18n="tagline">Community Gas & Kerosene Radar</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5" data-i18n="tagline">Verified Merchant & Gas Radar</p>
                 </div>
             </div>
 
@@ -86,8 +86,8 @@
                     </button>
                 </div>
 
-                <button onclick="openReportModal()" class="inline-flex items-center bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm shadow-sm transition active:scale-95">
-                    <i class="fa-solid fa-plus mr-1 sm:mr-2"></i> <span data-i18n="btn_report">Report Arrival</span>
+                <button onclick="openMerchantPortal()" class="inline-flex items-center bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm shadow-sm transition active:scale-95">
+                    <i class="fa-solid fa-store mr-1 sm:mr-2"></i> <span data-i18n="btn_merchant_portal">Merchant Portal</span>
                 </button>
             </div>
         </div>
@@ -106,14 +106,14 @@
                 </div>
                 <div class="max-w-2xl relative z-10">
                     <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 mb-3">
-                        <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span> <span data-i18n="hero_badge">Crowdsourced Real-Time Updates</span>
+                        <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span> <span data-i18n="hero_badge">Verified Merchant Stock Updates</span>
                     </span>
-                    <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight mb-2" data-i18n="hero_title">Check Gas & Kerosene Stock Before You Queue</h2>
-                    <p class="text-slate-300 text-sm sm:text-base mb-6" data-i18n="hero_desc">Real-time community reports from across Sri Lanka. Upvote accurate stocks and downvote spam to protect neighbors.</p>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight mb-2" data-i18n="hero_title">Check Verified Gas & Kerosene Stock Before You Queue</h2>
+                    <p class="text-slate-300 text-sm sm:text-base mb-6" data-i18n="hero_desc">Direct listings from authorized filling stations and gas dealers across Sri Lanka. No random rumors.</p>
                     
                     <div class="flex flex-wrap gap-3">
-                        <button onclick="openReportModal()" class="bg-white text-slate-900 hover:bg-emerald-50 font-bold px-5 py-2.5 rounded-xl text-sm shadow-md transition flex items-center">
-                            <i class="fa-solid fa-circle-plus text-emerald-600 mr-2"></i> <span data-i18n="btn_submit_report">Submit Live Report</span>
+                        <button onclick="openMerchantPortal()" class="bg-white text-slate-900 hover:bg-emerald-50 font-bold px-5 py-2.5 rounded-xl text-sm shadow-md transition flex items-center">
+                            <i class="fa-solid fa-store text-emerald-600 mr-2"></i> <span data-i18n="btn_merchant_login">Merchant Login & Post Stock</span>
                         </button>
                         <a href="#feed-section" class="bg-emerald-700/60 hover:bg-emerald-700 text-white font-medium px-4 py-2.5 rounded-xl text-sm transition border border-emerald-600/50 flex items-center">
                             <i class="fa-solid fa-list mr-2"></i> <span data-i18n="btn_view_feed">View Live Feed</span>
@@ -178,10 +178,10 @@
             <div>
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="font-bold text-slate-900 dark:text-white text-lg flex items-center">
-                        <i class="fa-solid fa-satellite-dish text-emerald-600 mr-2"></i> <span data-i18n="live_community_reports">Live Community Reports</span>
-                        <span id="results-count" class="ml-2 text-xs bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-2 py-0.5 rounded-full">0 reports</span>
+                        <i class="fa-solid fa-satellite-dish text-emerald-600 mr-2"></i> <span data-i18n="live_merchant_reports">Verified Merchant Listings</span>
+                        <span id="results-count" class="ml-2 text-xs bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-2 py-0.5 rounded-full">0 listings</span>
                     </h3>
-                    <span class="text-xs text-slate-400" data-i18n="auto_synced">Verified by community upvotes</span>
+                    <span class="text-xs text-slate-400" data-i18n="auto_synced">Posted directly by verified business owners</span>
                 </div>
 
                 <div id="alerts-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -193,11 +193,8 @@
                     <div class="h-16 w-16 bg-slate-100 dark:bg-slate-800 text-slate-400 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl">
                         <i class="fa-solid fa-triangle-exclamation"></i>
                     </div>
-                    <h4 class="font-semibold text-slate-800 dark:text-slate-200 text-base" data-i18n="no_matching">No matching reports found</h4>
-                    <p class="text-slate-500 text-sm mt-1" data-i18n="no_matching_desc">Try adjusting your filters or search term, or report a new arrival.</p>
-                    <button onclick="openReportModal()" class="mt-4 bg-emerald-600 text-white font-medium px-4 py-2 rounded-xl text-sm shadow-xs hover:bg-emerald-700 transition" data-i18n="btn_add_report">
-                        Add New Report
-                    </button>
+                    <h4 class="font-semibold text-slate-800 dark:text-slate-200 text-base" data-i18n="no_matching">No matching listings found</h4>
+                    <p class="text-slate-500 text-sm mt-1" data-i18n="no_matching_desc">Try adjusting your filters or search term.</p>
                 </div>
             </div>
         </div>
@@ -213,7 +210,7 @@
                         <i class="fa-solid fa-lock text-xs"></i> <span data-i18n="restricted_admin">Restricted Admin Dashboard</span>
                     </span>
                     <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight" data-i18n="admin_control_center">System Control Center</h2>
-                    <p class="text-slate-400 text-sm mt-1" data-i18n="admin_desc">Verify user reports, review auto-flagged spam, and broadcast urgent push alerts to citizens.</p>
+                    <p class="text-slate-400 text-sm mt-1" data-i18n="admin_desc">Verify merchant business accounts, review dealer stock listings, and broadcast urgent push alerts.</p>
                 </div>
                 <div class="flex items-center space-x-3">
                     <button onclick="openBroadcastModal()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-4 py-2.5 rounded-xl text-sm shadow-md transition flex items-center">
@@ -229,31 +226,31 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs flex items-center justify-between">
                     <div>
-                        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider" data-i18n="stat_total">Total Reports Today</p>
-                        <h4 id="stat-total" class="text-2xl font-bold text-slate-900 dark:text-white mt-1">0</h4>
+                        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider" data-i18n="stat_merchants">Total Merchants</p>
+                        <h4 id="stat-merchants" class="text-2xl font-bold text-slate-900 dark:text-white mt-1">0</h4>
                     </div>
                     <div class="h-12 w-12 bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 rounded-xl flex items-center justify-center text-xl">
-                        <i class="fa-solid fa-clipboard-list"></i>
+                        <i class="fa-solid fa-store"></i>
                     </div>
                 </div>
 
                 <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs flex items-center justify-between">
                     <div>
-                        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider" data-i18n="stat_pending">Pending Verification</p>
-                        <h4 id="stat-pending" class="text-2xl font-bold text-amber-600 mt-1">0</h4>
+                        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider" data-i18n="stat_pending_merchants">Pending Business Approvals</p>
+                        <h4 id="stat-pending-merchants" class="text-2xl font-bold text-amber-600 mt-1">0</h4>
                     </div>
                     <div class="h-12 w-12 bg-amber-50 dark:bg-amber-950 text-amber-600 rounded-xl flex items-center justify-center text-xl">
-                        <i class="fa-solid fa-clock-rotate-left"></i>
+                        <i class="fa-solid fa-user-clock"></i>
                     </div>
                 </div>
 
                 <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs flex items-center justify-between">
                     <div>
-                        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider" data-i18n="stat_verified">Verified Stocks</p>
-                        <h4 id="stat-verified" class="text-2xl font-bold text-emerald-600 mt-1">0</h4>
+                        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider" data-i18n="stat_active_listings">Active Stock Listings</p>
+                        <h4 id="stat-listings" class="text-2xl font-bold text-emerald-600 mt-1">0</h4>
                     </div>
                     <div class="h-12 w-12 bg-emerald-50 dark:bg-emerald-950 text-emerald-600 rounded-xl flex items-center justify-center text-xl">
-                        <i class="fa-solid fa-circle-check"></i>
+                        <i class="fa-solid fa-box"></i>
                     </div>
                 </div>
 
@@ -268,12 +265,40 @@
                 </div>
             </div>
 
-            <!-- Management Table -->
+            <!-- Merchant Verification Management Table -->
+            <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-xs border border-slate-200 dark:border-slate-800 overflow-hidden mb-6">
+                <div class="p-5 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center">
+                    <div>
+                        <h3 class="font-bold text-slate-900 dark:text-white text-base" data-i18n="admin_merchant_requests">Pending Business Account Verifications</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400" data-i18n="admin_merchant_desc">Review filling station registrations & phone numbers before granting posting privileges.</p>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50 dark:bg-slate-800/50 text-slate-400 text-xs font-semibold uppercase border-b border-slate-200 dark:border-slate-800">
+                                <th class="py-3 px-4">Business Name & Owner</th>
+                                <th class="py-3 px-4">District / Location</th>
+                                <th class="py-3 px-4">BR / License No</th>
+                                <th class="py-3 px-4">Phone Number</th>
+                                <th class="py-3 px-4">Status</th>
+                                <th class="py-3 px-4 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-merchants-table-body" class="divide-y divide-slate-100 dark:divide-slate-800 text-sm">
+                            <!-- Injected by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Stock Listings Management Table -->
             <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-xs border border-slate-200 dark:border-slate-800 overflow-hidden">
                 <div class="p-5 border-b border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                     <div>
-                        <h3 class="font-bold text-slate-900 dark:text-white text-base" data-i18n="admin_all_submissions">All Community Submissions</h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400" data-i18n="admin_sub_desc">Manage trust scores, verify, pin to top, or delete false reports instantly.</p>
+                        <h3 class="font-bold text-slate-900 dark:text-white text-base" data-i18n="admin_all_submissions">All Merchant Stock Listings</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400" data-i18n="admin_sub_desc">Manage sponsored badges, pin to top, or delete dealer stock reports instantly.</p>
                     </div>
                     <div class="flex items-center space-x-2 w-full sm:w-auto">
                         <input type="text" id="admin-search" oninput="renderAdminTable()" placeholder="Search logs..." data-i18n-placeholder="search_logs" class="bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700 text-xs rounded-xl px-3 py-2 w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-slate-500/20">
@@ -291,7 +316,7 @@
                                 <th class="py-3 px-4" data-i18n="th_item">Item Type</th>
                                 <th class="py-3 px-4" data-i18n="th_status">Status</th>
                                 <th class="py-3 px-4" data-i18n="th_trust_score">Trust Score (Votes)</th>
-                                <th class="py-3 px-4" data-i18n="th_admin_status">Admin Status</th>
+                                <th class="py-3 px-4" data-i18n="th_admin_status">Badge Status</th>
                                 <th class="py-3 px-4 text-right" data-i18n="th_actions">Actions</th>
                             </tr>
                         </thead>
@@ -308,7 +333,7 @@
     <!-- Footer -->
     <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 mt-12 py-6 text-center text-xs text-slate-500 dark:text-slate-400 transition-colors duration-200">
         <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-            <p data-i18n="footer_text">GasAlert Sri Lanka &copy; 2026. Crowdsourced Community Information System.</p>
+            <p data-i18n="footer_text">GasAlert Sri Lanka &copy; 2026. Verified Merchant & Community Information System.</p>
             <div class="flex items-center space-x-4">
                 <span class="flex items-center text-emerald-600 dark:text-emerald-400 font-medium"><i class="fa-solid fa-circle text-xs mr-1 text-emerald-500"></i> <span data-i18n="system_operational">System Operational</span></span>
                 <span>•</span>
@@ -320,66 +345,123 @@
 
     <!-- ================= MODALS ================= -->
 
-    <!-- Report Arrival Modal -->
-    <div id="report-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 dark:border-slate-800 animate-in fade-in zoom-in-95 duration-200">
+    <!-- Merchant Portal / Registration Modal -->
+    <div id="merchant-portal-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 dark:border-slate-800 animate-in fade-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center mb-4 pb-2 border-b border-slate-100 dark:border-slate-800">
                 <h3 class="font-bold text-slate-900 dark:text-white text-lg flex items-center">
-                    <i class="fa-solid fa-circle-plus text-emerald-600 mr-2"></i> <span data-i18n="modal_report_title">Report Gas / Kerosene Stock</span>
+                    <i class="fa-solid fa-store text-emerald-600 mr-2"></i> <span data-i18n="merchant_portal_title">Verified Merchant Portal</span>
                 </h3>
-                <button onclick="closeReportModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
+                <button onclick="closeMerchantPortal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
 
-            <form id="report-form" onsubmit="handleReportSubmit(event)" class="space-y-4">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <!-- Tabs inside Merchant Portal: 1. Register Business, 2. Merchant Login & Post Stock -->
+            <div class="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-xl mb-4">
+                <button id="tab-reg" onclick="switchMerchantTab('register')" class="flex-1 py-2 text-xs font-semibold rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs transition">Register Business</button>
+                <button id="tab-post" onclick="switchMerchantTab('post')" class="flex-1 py-2 text-xs font-semibold rounded-lg text-slate-600 dark:text-slate-400 transition">Merchant Dashboard</button>
+            </div>
+
+            <!-- Tab 1: Register Business Form -->
+            <div id="section-merchant-register" class="space-y-4">
+                <p class="text-xs text-slate-500 dark:text-slate-400">Register your filling station or gas dealership to obtain verified merchant posting privileges.</p>
+                <form id="merchant-reg-form" onsubmit="handleMerchantRegistration(event)" class="space-y-3">
                     <div>
-                        <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase mb-1" data-i18n="lbl_store">Store / Location Name *</label>
-                        <input type="text" id="rep-store" required placeholder="e.g., Sathosa Outlet, Filling Station" data-i18n-placeholder="ph_store" class="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600">
+                        <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase mb-1">Business / Station Name *</label>
+                        <input type="text" id="reg-biz-name" required placeholder="e.g., Peliyagoda Filling Station" class="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
                     </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase mb-1" data-i18n="lbl_district">District / City *</label>
-                        <input type="text" id="rep-district" required placeholder="e.g., Colombo 05, Gampaha" data-i18n-placeholder="ph_district" class="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase mb-1">Owner / Manager Name *</label>
+                            <input type="text" id="reg-owner" required placeholder="e.g., S. Perera" class="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase mb-1">District / City *</label>
+                            <input type="text" id="reg-district" required placeholder="e.g., Gampaha" class="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase mb-1">Business Registration / License No *</label>
+                            <input type="text" id="reg-br" required placeholder="e.g., PV-123456 or License #998" class="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase mb-1">Phone Number (SMS Verification) *</label>
+                            <input type="text" id="reg-phone" required placeholder="e.g., 0771234567" class="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
+                        </div>
+                    </div>
+                    <div class="bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-900/50 rounded-xl p-3 text-xs text-emerald-800 dark:text-emerald-300 flex items-start space-x-2">
+                        <i class="fa-solid fa-circle-check mt-0.5 shrink-0"></i>
+                        <p>Once submitted, an administrator will verify your BR or phone number to activate your Merchant posting dashboard.</p>
+                    </div>
+                    <div class="flex justify-end space-x-3 pt-2">
+                        <button type="button" onclick="closeMerchantPortal()" class="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 text-sm font-medium transition">Cancel</button>
+                        <button type="submit" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold shadow-sm transition">Submit Registration</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Tab 2: Merchant Login & Post Stock Dashboard -->
+            <div id="section-merchant-post" class="space-y-4 hidden">
+                <div id="merchant-login-box">
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-3">Enter your verified business phone number or registered merchant ID to access your stock publishing portal.</p>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase mb-1">Verified Phone / Merchant ID *</label>
+                            <input type="text" id="login-merchant-id" placeholder="e.g., 0771234567 or Peliyagoda Filling Station" class="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
+                        </div>
+                        <button onclick="verifyMerchantLogin()" class="w-full py-2.5 rounded-xl bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 text-white text-sm font-semibold transition">Access Sponsored Listing Dashboard</button>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase mb-1" data-i18n="lbl_item">Item Type *</label>
-                        <select id="rep-item" required class="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600">
-                            <option value="Litro 12.5kg">Litro 12.5kg Cylinder</option>
-                            <option value="Litro 5kg">Litro 5kg Cylinder</option>
-                            <option value="Laughfs 12.5kg">Laughfs 12.5kg Cylinder</option>
-                            <option value="Laughfs 5kg">Laughfs 5kg Cylinder</option>
-                            <option value="Kerosene">Kerosene (Liters)</option>
-                        </select>
+                <!-- Sponsored Listing Form (Hidden until logged in as verified merchant) -->
+                <div id="merchant-dashboard-box" class="hidden space-y-4">
+                    <div class="bg-emerald-50 dark:bg-emerald-950/80 border border-emerald-200 dark:border-emerald-900 rounded-xl p-3 flex justify-between items-center">
+                        <div class="flex items-center space-x-2">
+                            <i class="fa-solid fa-certificate text-emerald-600 text-lg"></i>
+                            <div>
+                                <h4 id="logged-merchant-name" class="font-bold text-xs text-emerald-900 dark:text-emerald-200">Store Name</h4>
+                                <span class="text-[10px] bg-emerald-200 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-300 px-2 py-0.5 rounded-full font-semibold">Verified Merchant Badge Active</span>
+                            </div>
+                        </div>
+                        <button onclick="logoutMerchant()" class="text-xs text-rose-600 hover:underline font-semibold">Switch Account</button>
                     </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase mb-1" data-i18n="lbl_status">Stock Status *</label>
-                        <select id="rep-status" required class="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600">
-                            <option value="Available" data-i18n="status_available_opt">🟢 Available (In Stock)</option>
-                            <option value="Limited" data-i18n="status_limited_opt">🟠 Limited Stock (Queue forming)</option>
-                            <option value="Finished" data-i18n="status_finished_opt">🔴 Finished / Out of Stock</option>
-                        </select>
-                    </div>
-                </div>
 
-                <div>
-                    <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase mb-1" data-i18n="lbl_note">Note / Queue Details</label>
-                    <textarea id="rep-note" rows="3" placeholder="e.g., Around 50 cylinders left. Token system active. Queue is moving fast." data-i18n-placeholder="ph_note" class="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600"></textarea>
-                </div>
+                    <form id="sponsored-report-form" onsubmit="handleSponsoredReportSubmit(event)" class="space-y-3">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase mb-1">Item Type *</label>
+                                <select id="spon-item" required class="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
+                                    <option value="Litro 12.5kg">Litro 12.5kg Cylinder</option>
+                                    <option value="Litro 5kg">Litro 5kg Cylinder</option>
+                                    <option value="Laughfs 12.5kg">Laughfs 12.5kg Cylinder</option>
+                                    <option value="Laughfs 5kg">Laughfs 5kg Cylinder</option>
+                                    <option value="Kerosene">Kerosene (Liters)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase mb-1">Stock Status *</label>
+                                <select id="spon-status" required class="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
+                                    <option value="Available">🟢 Available (In Stock)</option>
+                                    <option value="Limited">🟠 Limited Stock (Queue forming)</option>
+                                    <option value="Finished">🔴 Finished / Out of Stock</option>
+                                </select>
+                            </div>
+                        </div>
 
-                <div class="bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-900/50 rounded-xl p-3 text-xs text-amber-800 dark:text-amber-300 flex items-start space-x-2">
-                    <i class="fa-solid fa-triangle-exclamation mt-0.5 shrink-0"></i>
-                    <p data-i18n="modal_warning">Please only submit accurate reports. False or spam submissions will be automatically hidden by community downvotes.</p>
-                </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase mb-1">Official Announcement / Queue Notice *</label>
+                            <textarea id="spon-note" rows="3" required placeholder="e.g., 200 cylinders arrived. Token distribution starting at 8:00 AM." class="w-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20"></textarea>
+                        </div>
 
-                <div class="flex justify-end space-x-3 pt-2">
-                    <button type="button" onclick="closeReportModal()" class="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 text-sm font-medium transition" data-i18n="btn_cancel">Cancel</button>
-                    <button type="submit" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold shadow-sm transition" data-i18n="btn_submit_modal">Submit Live Report</button>
+                        <div class="flex justify-end space-x-3 pt-2">
+                            <button type="button" onclick="closeMerchantPortal()" class="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 text-sm font-medium transition">Cancel</button>
+                            <button type="submit" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold shadow-sm transition">Publish Sponsored Listing</button>
+                        </div>
+                    </form>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 
@@ -396,7 +478,7 @@
                 </button>
             </div>
             
-            <p class="text-xs text-slate-500 dark:text-slate-400 mb-4"><span data-i18n="admin_login_desc">Enter the secure admin PIN to access dashboard controls and verification tools.</span></p>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mb-4"><span data-i18n="admin_login_desc">Enter the secure admin PIN to access dashboard controls and merchant verifications.</span> </p>
 
             <form onsubmit="handleAdminLogin(event)" class="space-y-4">
                 <div>
@@ -445,19 +527,19 @@
     </div>
 
 
-    <!-- JavaScript Application Logic with Multi-Language Dictionaries & Voting/Trust System -->
+    <!-- JavaScript Application Logic with Multi-Language Dictionaries & Verified Merchant Workflow -->
     <script>
         // Multi-Language Translations Dictionary (English, Sinhala, Tamil)
         const translations = {
             en: {
-                tagline: "Community Gas & Kerosene Radar",
+                tagline: "Verified Merchant & Gas Radar",
                 nav_citizen: "Citizen Feed",
                 nav_admin: "Admin Portal",
-                btn_report: "Report Arrival",
-                hero_badge: "Crowdsourced Real-Time Updates",
-                hero_title: "Check Gas & Kerosene Stock Before You Queue",
-                hero_desc: "Real-time community reports from across Sri Lanka. Upvote accurate stocks and downvote spam to protect neighbors.",
-                btn_submit_report: "Submit Live Report",
+                btn_merchant_portal: "Merchant Portal",
+                hero_badge: "Verified Merchant Stock Updates",
+                hero_title: "Check Verified Gas & Kerosene Stock Before You Queue",
+                hero_desc: "Direct listings from authorized filling stations and gas dealers across Sri Lanka. No random rumors.",
+                btn_merchant_login: "Merchant Login & Post Stock",
                 btn_view_feed: "View Live Feed",
                 search_placeholder: "Search store name, city, or district...",
                 opt_all_districts: "All Districts",
@@ -471,50 +553,37 @@
                 pill_available: "🟢 Available",
                 pill_limited: "🟠 Limited Stock",
                 pill_finished: "🔴 Finished / Over",
-                live_community_reports: "Live Community Reports",
-                auto_synced: "Verified by community upvotes",
-                no_matching: "No matching reports found",
-                no_matching_desc: "Try adjusting your filters or search term, or report a new arrival.",
-                btn_add_report: "Add New Report",
+                live_merchant_reports: "Verified Merchant Listings",
+                auto_synced: "Posted directly by verified business owners",
+                no_matching: "No matching listings found",
+                no_matching_desc: "Try adjusting your filters or search term.",
                 restricted_admin: "Restricted Admin Dashboard",
                 admin_control_center: "System Control Center",
-                admin_desc: "Verify user reports, review auto-flagged spam, and broadcast urgent push alerts to citizens.",
+                admin_desc: "Verify merchant business accounts, review dealer stock listings, and broadcast urgent push alerts.",
                 btn_broadcast: "Broadcast Alert",
                 btn_exit_admin: "Exit to User View",
-                stat_total: "Total Reports Today",
-                stat_pending: "Pending Verification",
-                stat_verified: "Verified Stocks",
+                stat_merchants: "Total Merchants",
+                stat_pending_merchants: "Pending Business Approvals",
+                stat_active_listings: "Active Stock Listings",
                 stat_flagged: "Flagged / Spam",
-                admin_all_submissions: "All Community Submissions",
-                admin_sub_desc: "Manage trust scores, verify, pin to top, or delete false reports instantly.",
+                admin_merchant_requests: "Pending Business Account Verifications",
+                admin_merchant_desc: "Review filling station registrations & phone numbers before granting posting privileges.",
+                admin_all_submissions: "All Merchant Stock Listings",
+                admin_sub_desc: "Manage sponsored badges, pin to top, or delete dealer stock reports instantly.",
                 search_logs: "Search logs...",
                 btn_reset: "Reset Data",
                 th_store: "Store & Location",
                 th_item: "Item Type",
                 th_status: "Status",
                 th_trust_score: "Trust Score (Votes)",
-                th_admin_status: "Admin Status",
+                th_admin_status: "Badge Status",
                 th_actions: "Actions",
-                footer_text: "GasAlert Sri Lanka © 2026. Crowdsourced Community Information System.",
+                footer_text: "GasAlert Sri Lanka © 2026. Verified Merchant & Community Information System.",
                 system_operational: "System Operational",
                 admin_login_link: "Admin Login",
-                modal_report_title: "Report Gas / Kerosene Stock",
-                lbl_store: "Store / Location Name *",
-                ph_store: "e.g., Sathosa Outlet, Filling Station",
-                lbl_district: "District / City *",
-                ph_district: "e.g., Colombo 05, Gampaha",
-                lbl_item: "Item Type *",
-                lbl_status: "Stock Status *",
-                status_available_opt: "🟢 Available (In Stock)",
-                status_limited_opt: "🟠 Limited Stock (Queue forming)",
-                status_finished_opt: "🔴 Finished / Out of Stock",
-                lbl_note: "Note / Queue Details",
-                ph_note: "e.g., Around 50 cylinders left. Token system active. Queue is moving fast.",
-                modal_warning: "Please only submit accurate reports. False or spam submissions will be automatically hidden by community downvotes.",
-                btn_cancel: "Cancel",
-                btn_submit_modal: "Submit Live Report",
+                merchant_portal_title: "Verified Merchant Portal",
                 admin_login_title: "Admin Portal Access",
-                admin_login_desc: "Enter the secure admin PIN to access dashboard controls and verification tools.",
+                admin_login_desc: "Enter the secure admin PIN to access dashboard controls and merchant verifications.",
                 lbl_pin: "Security PIN",
                 login_error: "Incorrect PIN. Please try again.",
                 btn_authenticate: "Authenticate",
@@ -522,21 +591,18 @@
                 lbl_announcement: "Announcement Message *",
                 ph_announcement: "e.g., Litro Gas mega shipment arrived at Pettah main depot...",
                 btn_publish: "Publish Broadcast",
-                pinned_update: "Pinned Update",
-                confirm_label: "Confirm",
-                false_label: "Fake/Spam",
-                just_now: "Just now",
-                auto_hidden_note: "Hidden due to excessive community downvotes (Spam protection)"
+                sponsored_badge: "Sponsored / Verified Merchant",
+                just_now: "Just now"
             },
             si: {
-                tagline: "ප්‍රජා ගෑස් සහ භූමිතෙල් රැඩාර් පද්ධතිය",
+                tagline: "තහවුරු කළ වෙළඳ සහ ගෑස් රැඩාර් පද්ධතිය",
                 nav_citizen: "පුරවැසි පුවත්පත",
                 nav_admin: "පරිපාලක ද්වාරය",
-                btn_report: "තොග වාර්තා කරන්න",
-                hero_badge: "ජනතා දායකත්වයෙන් තත්‍ය කාලීන යාවත්කාලීන කිරීම්",
-                hero_title: "පෝලිම්වල පැය ගණන් රැඳීමට පෙර ගෑස් සහ භූමිතෙල් තොග පරීක්ෂා කරන්න",
-                hero_desc: "ශ්‍රී ලංකාව පුරා සිටින ජනතාවගේ තත්‍ය කාලීන වාර්තා. නිවැරදි තොග තහවුරු කරන්න සහ අසත්‍ය තොරතුරු ඉවත් කරන්න.",
-                btn_submit_report: "වාර්තාවක් එකතු කරන්න",
+                btn_merchant_portal: "වෙළඳ ද්වාරය",
+                hero_badge: "තහවුරු කළ වෙළඳ තොග යාවත්කාලීන කිරීම්",
+                hero_title: "පෝලිම්වලට යාමට පෙර තහවුරු කළ ගෑස් සහ භූමිතෙල් තොග පරීක්ෂා කරන්න",
+                hero_desc: "බලධාරීන්ගෙන් අනුමත පිරවුම්හල් සහ ගෑස් වෙළඳුන්ගෙන් සෘජු තොරතුරු.",
+                btn_merchant_login: "වෙළඳ පිවිසුම සහ තොග පළ කිරීම",
                 btn_view_feed: "සජීවී පුවත් බලන්න",
                 search_placeholder: "ගබඩාවේ නම, නගරය හෝ දිස්ත්‍රික්කය සෙවීම...",
                 opt_all_districts: "සියලුම දිස්ත්‍රික්ක",
@@ -544,154 +610,129 @@
                 opt_all_statuses: "සියලුම තත්ත්වයන්",
                 status_available: "ඇත (කොළ)",
                 status_limited: "සීමිතයි (දොඩම්)",
-                status_finished: "අසම්පූර්ණයි/අවර (රතු)",
+                status_finished: "අසම්පූර්ණයි (රතු)",
                 quick_status: "ක්ෂණික තත්ත්වය:",
                 filter_all: "සියල්ල",
                 pill_available: "🟢 ලබාගත හැක",
                 pill_limited: "🟠 සීමිත තොග",
                 pill_finished: "🔴 අවසන් වී ඇත",
-                live_community_reports: "සජීවී ප්‍රජා වාර්තා",
-                auto_synced: "ප්‍රජා ඡන්ද මඟින් තහවුරු කරන ලදී",
-                no_matching: "ගැලපෙන වාර්තා හමු නොවීය",
+                live_merchant_reports: "තහවුරු කළ වෙළඳ ලැයිස්තුව",
+                auto_synced: "වෙළඳ ව්‍යාපාරිකයන් විසින් සෘජුව පළ කරන ලදී",
+                no_matching: "ගැලපෙන ලැයිස්තු හමු නොවීය",
                 no_matching_desc: "ඔබගේ පෙරහන් හෝ සෙවුම් පදය වෙනස් කර උත්සාහ කරන්න.",
-                btn_add_report: "නව වාර්තාවක් එක් කරන්න",
                 restricted_admin: "සීමිත පරිපාලක පාලන පුවරුව",
                 admin_control_center: "පද්ධති පාලන මධ්‍යස්ථානය",
-                admin_desc: "පරිශීලක වාර්තා සත්‍යාපනය කරන්න, ස්වයංක්‍රීයව අත්හිටවූ ස්පෑම් සමාලෝචනය කරන්න සහ හදිසි දැනුම්දීම් නිකුත් කරන්න.",
+                admin_desc: "වෙළඳ ව්‍යාපාරික ගිණුම් සත්‍යාපනය කරන්න, තොග ලැයිස්තු සමාලෝචනය කරන්න සහ හදිසි දැනුම්දීම් නිකුත් කරන්න.",
                 btn_broadcast: "දැනුම්දීමක් විකාශය කරන්න",
                 btn_exit_admin: "පුරවැසි දර්ශනයට යන්න",
-                stat_total: "අද මුළු වාර්තා",
-                stat_pending: "සත්‍යාපනය අපේක්ෂිත",
-                stat_verified: "සත්‍යාපිත තොග",
+                stat_merchants: "මුළු වෙළඳුන්",
+                stat_pending_merchants: "අනුමැතිය අපේක්ෂිත ව්‍යාපාර",
+                stat_active_listings: "ක්‍රියාකාරී තොග ලැයිස්තු",
                 stat_flagged: "වාර්තා කළ/ස්පෑම්",
-                admin_all_submissions: "සියලුම ප්‍රජා ඉදිරිපත් කිරීම්",
-                admin_sub_desc: "විශ්වාසනීය ලකුණු කළමනාකරණය කරන්න, තහවුරු කරන්න හෝ මකා දමන්න.",
+                admin_merchant_requests: "ව්‍යාපාරික ගිණුම් සත්‍යාපන ඉල්ලීම්",
+                admin_merchant_desc: "පළ කිරීමේ අයිතිය ලබා දීමට පෙර පිරවුම්හල් ලියාපදිංචි අංක පරීක්ෂා කරන්න.",
+                admin_all_submissions: "සියලුම වෙළඳ තොග ලැයිස්තු",
+                admin_sub_desc: "අනුග්‍රහ ලකුණු කළමනාකරණය කරන්න හෝ මකා දමන්න.",
                 search_logs: "වාර්තා සෙවීම...",
                 btn_reset: "දත්ත යළි පිහිටුවන්න",
                 th_store: "ගබඩාව සහ ස්ථානය",
                 th_item: "භාණ්ඩ වර්ගය",
                 th_status: "තත්ත්වය",
                 th_trust_score: "විශ්වාසනීය ලකුණු (ඡන්ද)",
-                th_admin_status: "පරිපාලක තත්ත්වය",
+                th_admin_status: "ලාංඡන තත්ත්වය",
                 th_actions: "ක්‍රියාමාර්ග",
-                footer_text: "GasAlert Sri Lanka © 2026. ප්‍රජා තොරතුරු පද්ධතිය.",
+                footer_text: "GasAlert Sri Lanka © 2026. තහවුරු කළ වෙළඳ පද්ධතිය.",
                 system_operational: "පද්ධතිය ක්‍රියාත්මකයි",
                 admin_login_link: "පරිපාලක පිවිසුම",
-                modal_report_title: "ගෑස් / භූමිතෙල් තොග වාර්තා කරන්න",
-                lbl_store: "ගබඩාව / ස්ථානයේ නම *",
-                ph_store: "උදා: සතොස අලෙවිසැල, පිරවුම්හල",
-                lbl_district: "දිස්ත්‍රික්කය / නගරය *",
-                ph_district: "උදා: කොළඹ 05, ගම්පහ",
-                lbl_item: "භාණ්ඩ වර්ගය *",
-                lbl_status: "තොග තත්ත්වය *",
-                status_available_opt: "🟢 ලබාගත හැක (තොග ඇත)",
-                status_limited_opt: "🟠 සීමිත තොග (පෝලිම් හැදෙමින් පවතී)",
-                status_finished_opt: "🔴 අවසන් / තොග නොමැත",
-                lbl_note: "සටහන / පෝලිම් විස්තර",
-                ph_note: "උදා: සිලින්ඩර් 50ක් පමණ ඉතිරිව ඇත. ටෝකන් ක්‍රමය ක්‍රියාත්මකයි.",
-                modal_warning: "කරුණාකර නිවැරදි තොරතුරු පමණක් ඇතුළත් කරන්න. වැරදි තොරතුරු ප්‍රජා ඡන්ද මඟින් ස්වයංක්‍රීයව සැඟවෙනු ඇත.",
-                btn_cancel: "අවලංගු කරන්න",
-                btn_submit_modal: "වාර්තාව ඉදිරිපත් කරන්න",
+                merchant_portal_title: "තහවුරු කළ වෙළඳ ද්වාරය",
                 admin_login_title: "පරිපාලක ද්වාර පිවිසුම",
-                admin_login_desc: "පාලන මෙවලම් වෙත ප්‍රවේශ වීමට ආරක්ෂිත PIN අංකය ඇතුළත් කරන්න. (පෙරනිමි PIN අංකය:",
+                admin_login_desc: "පාලන මෙවලම් වෙත ප්‍රවේශ වීමට ආරක්ෂිත PIN අංකය ඇතුළත් කරන්න.",
                 lbl_pin: "ආරක්ෂක PIN අංකය",
-                login_error: "වැරදි PIN අංකයකි. කරුණාකර නැවත උත්සාහ කරන්න (Demo PIN: 1234).",
+                login_error: "වැරදි PIN අංකයකි (Demo: 1234).",
                 btn_authenticate: "තහවුරු කරන්න",
                 broadcast_modal_title: "හදිසි නිවේදනයක් නිකුත් කරන්න",
                 lbl_announcement: "නිවේදන පණිවිඩය *",
                 ph_announcement: "උදා: ලිත්‍රෝ ගෑස් ප්‍රධාන නැව්ගත කිරීම පිටකොටුව ගබඩාවට පැමිණ ඇත...",
                 btn_publish: "ප්‍රකාශයට පත් කරන්න",
-                pinned_update: "ප්‍රධාන යාවත්කාලීන කිරීම",
-                confirm_label: "තහවුරු කරන්න",
-                false_label: "අසත්‍ය/ස්පෑම්",
-                just_now: "දැන්",
-                auto_hidden_note: "අධික ප්‍රජා විරෝධතා ඡන්ද හේතුවෙන් සැඟවී ඇත (ස්පෑම් ආරක්ෂණය)"
+                sponsored_badge: "අනුග්‍රහය ලැබූ / තහවුරු කළ වෙළෙන්දා",
+                just_now: "දැන්"
             },
             ta: {
-                tagline: "சமூக எரிவாயு மற்றும் மண்ணெண்ணெய் ரேடார்",
+                tagline: "சரிபார்க்கப்பட்ட வணிக மற்றும் எரிவாயு ரேடார்",
                 nav_citizen: "குடிமக்கள் ஊட்டம்",
                 nav_admin: "நிர்வாக போர்டல்",
-                btn_report: "வருகையைப் புகாரளி",
-                hero_badge: "நிகழ்நேர சமுதாய புதுப்பிப்புகள்",
-                hero_title: "வரிசையில் நிற்கும் முன் எரிவாயு மற்றும் மண்ணெண்ணெய் இருப்பைச் சரிபார்க்கவும்",
-                hero_desc: "இலங்கை முழுவதிலுமிருந்து நிகழ்நேர சமூக அறிக்கைகள். துல்லியமான இருப்பை உறுதிப்படுத்தவும், ஸ்பேம் தகவல்களை விலக்கவும்.",
-                btn_submit_report: "நேரலை அறிக்கையைச் சமர்ப்பிக்கவும்",
+                btn_merchant_portal: "வணிக போர்டல்",
+                hero_badge: "சரிபார்க்கப்பட்ட வணிக பங்கு புதுப்பிப்புகள்",
+                hero_title: "வரிசையில் நிற்கும் முன் சரிபார்க்கப்பட்ட எரிவாயு இருப்பைச் சரிபார்க்கவும்",
+                hero_desc: "அங்கீகரிக்கப்பட்ட எரிபொருள் நிலையங்கள் மற்றும் எரிவாயு முகவர்களிடமிருந்து நேரடி பட்டியல்கள்.",
+                btn_merchant_login: "வணிக உள்நுழைவு & பங்கு இடுகை",
                 btn_view_feed: "நேரலை ஊட்டம்",
                 search_placeholder: "கடை பெயர், நகரம் அல்லது மாவட்டத்தைத் தேடவும்...",
                 opt_all_districts: "அனைத்து மாவட்டங்களும்",
                 opt_all_items: "அனைத்துப் பொருட்களும்",
                 opt_all_statuses: "அனைத்து நிலைகளும்",
                 status_available: "கிடைக்கிறது (பச்சை)",
-                status_limited: "పరిమితం (ஆரஞ்சு)",
+                status_limited: "வரையறுக்கப்பட்ட (ஆரஞ்சு)",
                 status_finished: "முடிந்தது (சிவப்பு)",
                 quick_status: "விரைவு நிலை:",
                 filter_all: "அனைத்தும்",
                 pill_available: "🟢 கிடைக்கிறது",
                 pill_limited: "🟠 வரையறுக்கப்பட்ட",
                 pill_finished: "🔴 முடிந்தது",
-                live_community_reports: "நேரலை சமூக அறிக்கைகள்",
-                auto_synced: "சமூக வாக்களிப்பு மூலம் சரிபார்க்கப்பட்டது",
-                no_matching: "பொருந்தும் அறிக்கைகள் எதுவும் கிடைக்கவில்லை",
+                live_merchant_reports: "சரிபார்க்கப்பட்ட வணிக பட்டியல்கள்",
+                auto_synced: "சரிபார்க்கப்பட்ட வணிக உரிமையாளர்களால் நேரடியாக இடுகையிடப்பட்டது",
+                no_matching: "பொருந்தும் பட்டியல்கள் எதுவும் கிடைக்கவில்லை",
                 no_matching_desc: "உங்கள் வடிப்பான்களை அல்லது தேடல் சொல்லைச் சரிசெய்ய முயற்சிக்கவும்.",
-                btn_add_report: "புதிய அறிக்கையைச் சேர்",
                 restricted_admin: "கட்டுப்படுத்தப்பட்ட நிர்வாக டாஷ்போர்டு",
                 admin_control_center: "அமைப்பு கட்டுப்பாட்டு மையம்",
-                admin_desc: "பயனர் அறிக்கைகளைச் சரிபார்க்கவும், ஸ்பேம் அறிக்கைகளைக் கண்காணிக்கவும், குடிமக்களுக்கு அவசர எச்சரிக்கைகளை ஒளிபரப்பவும்.",
+                admin_desc: "வணிக கணக்குகளைச் சரிபார்க்கவும், பங்கு பட்டியல்களை மதிப்பீடு செய்யவும், அவசர அறிவிப்புகளை ஒளிபரப்பவும்.",
                 btn_broadcast: "எச்சரிக்கையை ஒளிபரப்பு",
                 btn_exit_admin: "பயனர் காட்சிக்கு செல்",
-                stat_total: "இன்றைய மொத்த அறிக்கைகள்",
-                stat_pending: "சரிபார்ப்பு நிலுவையில் உள்ளது",
-                stat_verified: "சரிபார்க்கப்பட்ட பங்குகள்",
+                stat_merchants: "மொத்த வணிகர்கள்",
+                stat_pending_merchants: "நிலுவையில் உள்ள வணிக ஒப்புதல்கள்",
+                stat_active_listings: "செயலில் உள்ள பங்கு பட்டியல்கள்",
                 stat_flagged: "கொடியிடப்பட்ட / ஸ்பேம்",
-                admin_all_submissions: "அனைத்து சமூக சமர்ப்பிப்புகளும்",
-                admin_sub_desc: "நம்பகத்தன்மை மதிப்பெண்களை நிர்வகிக்கவும், சரிபார்க்கவும் அல்லது நீக்கவும்.",
+                admin_merchant_requests: "வணிக கணக்கு சரிபார்ப்பு கோரிக்கைகள்",
+                admin_merchant_desc: "இடுகையிடும் சலுகைகளை வழங்குவதற்கு முன் வணிக பதிவுகளை மதிப்பாய்வு செய்யவும்.",
+                admin_all_submissions: "அனைத்து வணிக பங்கு பட்டியல்களும்",
+                admin_sub_desc: "ஸ்பான்சர் செய்யப்பட்ட பேட்ஜ்களை நிர்வகிக்கவும் அல்லது நீக்கவும்.",
                 search_logs: "பதிவுகளைத் தேடு...",
                 btn_reset: "தரவை மீட்டமை",
                 th_store: "கடை மற்றும் இருப்பிடம்",
                 th_item: "உருப்படி வகை",
                 th_status: "நிலை",
                 th_trust_score: "நம்பகத்தன்மை மதிப்பெண் (வாக்குகள்)",
-                th_admin_status: "நிர்வாக நிலை",
+                th_admin_status: "பேட்ஜ் நிலை",
                 th_actions: "செயல்கள்",
-                footer_text: "GasAlert Sri Lanka © 2026. சமூக தகவல் அமைப்பு.",
+                footer_text: "GasAlert Sri Lanka © 2026. சரிபார்க்கப்பட்ட வணிக தகவல் அமைப்பு.",
                 system_operational: "அமைப்பு செயல்பாட்டில் உள்ளது",
                 admin_login_link: "நிர்வாக உள்நுழைவு",
-                modal_report_title: "எரிவாயு / மண்ணெண்ணெய் இருப்பைப் புகாரளி",
-                lbl_store: "கடை / இருப்பிடப் பெயர் *",
-                ph_store: "எ.கா: சதொச அங்காடி, எரிபொருள் நிலையம்",
-                lbl_district: "மாவட்டம் / நகரம் *",
-                ph_district: "எ.கா: கொழும்பு 05, கம்பஹா",
-                lbl_item: "உருப்படி வகை *",
-                lbl_status: "பங்கு நிலை *",
-                status_available_opt: "🟢 கிடைக்கிறது (இருப்பில் உள்ளது)",
-                status_limited_opt: "🟠 வரையறுக்கப்பட்ட பங்கு (வரிசை உருவாகிறது)",
-                status_finished_opt: "🔴 முடிந்தது / பங்கு இல்லை",
-                lbl_note: "குறிப்பு / வரிசை விவரங்கள்",
-                ph_note: "எ.கா: சுமார் 50 சிலிண்டர்கள் மீதமுள்ளன. டோக்கன் முறை செயலில் உள்ளது.",
-                modal_warning: "துல்லியமான அறிக்கைகளை மட்டுமே சமர்ப்பிக்கவும். தவறான தகவல்கள் சமூக வாக்களிப்பு மூலம் தானாக மறைக்கப்படும்.",
-                btn_cancel: "ரத்து செய்",
-                btn_submit_modal: "நேரலை அறிக்கையைச் சமர்ப்பிக்கவும்",
+                merchant_portal_title: "சரிபார்க்கப்பட்ட வணிக போர்டல்",
                 admin_login_title: "நிர்வாக போர்டல் அணுகல்",
-                admin_login_desc: "கட்டுப்பாட்டு கருவிகளை அணுக பாதுகாப்பான PIN ஐ உள்ளிடவும். (இயல்புநிலை PIN:",
+                admin_login_desc: "கட்டுப்பாட்டு கருவிகளை அணுக பாதுகாப்பான PIN ஐ உள்ளிடவும்.",
                 lbl_pin: "பாதுகாப்பு PIN",
-                login_error: "தவறான PIN. மீண்டும் முயற்சிக்கவும் (Demo PIN: 1234).",
+                login_error: "தவறான PIN (Demo: 1234).",
                 btn_authenticate: "உள்நுழை",
                 broadcast_modal_title: "அவசர பதாகையை ஒளிபரப்பு",
                 lbl_announcement: "அறிவிப்பு செய்தி *",
                 ph_announcement: "எ.கா: பெட்டாஹ்கோடி குடோனுக்கு லிட்ரோ கேஸ் கப்பல் வந்துள்ளது...",
                 btn_publish: "ஒளிபரப்பைக் প্রকাশ செய்",
-                pinned_update: "pinned புதுப்பிப்பு",
-                confirm_label: "உறுதிப்படுத்து",
-                false_label: "போலி/ஸ்பேம்",
-                just_now: "இப்போது",
-                auto_hidden_note: "அதிகப்படியான எதிர்ப்பு வாக்குகளால் மறைக்கப்பட்டது (ஸ்பேம் பாதுகாப்பு)"
+                sponsored_badge: "ஸ்பான்சர் செய்யப்பட்ட / சரிபார்க்கப்பட்ட வணிகர்",
+                just_now: "இப்போது"
             }
         };
 
         let currentLang = localStorage.getItem('gasalert_lang') || 'en';
         let currentTheme = localStorage.getItem('gasalert_theme') || 'light';
 
-        // Initial Mock Data with upvotes and downvotes
+        // Initial Mock Merchants Data
+        const defaultMerchants = [
+            { id: 'm1', name: 'Litro Gas Main Distributor', owner: 'A. B. Gunawardena', district: 'Colombo 05', br: 'PV-889922', phone: '0771234567', status: 'Approved' },
+            { id: 'm2', name: 'Ceypetco Filling Station', owner: 'S. K. Perera', district: 'Gampaha', br: 'BR-44321', phone: '0719876543', status: 'Approved' },
+            { id: 'm3', name: 'Laughfs Gas Agent Nugegoda', owner: 'M. R. Jayasinghe', district: 'Nugegoda', br: 'PV-55441', phone: '0701122334', status: 'Pending' }
+        ];
+
+        // Initial Mock Verified Stock Listings Data
         const defaultAlerts = [
             {
                 id: '1',
@@ -699,13 +740,13 @@
                 district: 'Colombo 05',
                 item: 'Litro 12.5kg',
                 status: 'Available',
-                note: 'Queue is about 30 people right now. Cylinders available in sufficient quantity.',
-                time: '12 mins ago',
-                upvotes: 28,
-                downvotes: 1,
-                verified: true,
+                note: 'Cylinders available in sufficient quantity. Queue is moving fast under police supervision.',
+                time: '15 mins ago',
+                upvotes: 42,
+                downvotes: 0,
                 pinned: true,
-                flagged: false
+                flagged: false,
+                merchantVerified: true
             },
             {
                 id: '2',
@@ -713,47 +754,21 @@
                 district: 'Gampaha',
                 item: 'Kerosene',
                 status: 'Limited',
-                note: 'Only 500L remaining. Bring your own 5L cans.',
-                time: '35 mins ago',
-                upvotes: 16,
-                downvotes: 2,
-                verified: true,
+                note: 'Only 500L remaining today. Bring authorized 5L jerry cans.',
+                time: '45 mins ago',
+                upvotes: 28,
+                downvotes: 1,
                 pinned: false,
-                flagged: false
-            },
-            {
-                id: '3',
-                store: 'Laughfs Gas Agent',
-                district: 'Nugegoda',
-                item: 'Laughfs 12.5kg',
-                status: 'Finished',
-                note: 'Stock finished around 10 AM. Next truck expected tomorrow morning.',
-                time: '1 hour ago',
-                upvotes: 12,
-                downvotes: 0,
-                verified: false,
-                pinned: false,
-                flagged: false
-            },
-            {
-                id: '4',
-                store: 'Sathosa Supermarket',
-                district: 'Kandy',
-                item: 'Litro 5kg',
-                status: 'Available',
-                note: 'Fresh stock arrived. Token system is being managed by police.',
-                time: '2 hours ago',
-                upvotes: 35,
-                downvotes: 2,
-                verified: true,
-                pinned: false,
-                flagged: false
+                flagged: false,
+                merchantVerified: true
             }
         ];
 
+        let merchants = JSON.parse(localStorage.getItem('gasalert_merchants')) || defaultMerchants;
         let alerts = JSON.parse(localStorage.getItem('gasalert_items')) || defaultAlerts;
         let activeStatusFilter = '';
         let currentBroadcast = localStorage.getItem('gasalert_broadcast') || '';
+        let activeLoggedInMerchant = JSON.parse(localStorage.getItem('gasalert_active_merchant')) || null;
 
         // Initialize App on Load
         window.onload = function() {
@@ -766,6 +781,7 @@
             }
             renderUserFeed();
             renderAdminTable();
+            renderAdminMerchantsTable();
             updateStats();
         };
 
@@ -795,6 +811,7 @@
             applyTranslations();
             renderUserFeed();
             renderAdminTable();
+            renderAdminMerchantsTable();
         }
 
         // Apply translations to data-i18n elements
@@ -817,8 +834,10 @@
         // Save to LocalStorage
         function saveData() {
             localStorage.setItem('gasalert_items', JSON.stringify(alerts));
+            localStorage.setItem('gasalert_merchants', JSON.stringify(merchants));
             renderUserFeed();
             renderAdminTable();
+            renderAdminMerchantsTable();
             updateStats();
         }
 
@@ -867,7 +886,123 @@
             }
         }
 
-        // Render User Feed with Trust Score & Spam Auto-Hiding Rules
+        // Merchant Portal Modal Controls
+        function openMerchantPortal() {
+            document.getElementById('merchant-portal-modal').classList.remove('hidden');
+            if (activeLoggedInMerchant) {
+                switchMerchantTab('post');
+            } else {
+                switchMerchantTab('register');
+            }
+        }
+
+        function closeMerchantPortal() {
+            document.getElementById('merchant-portal-modal').classList.add('hidden');
+        }
+
+        function switchMerchantTab(tab) {
+            const tabReg = document.getElementById('tab-reg');
+            const tabPost = document.getElementById('tab-post');
+            const secReg = document.getElementById('section-merchant-register');
+            const secPost = document.getElementById('section-merchant-post');
+
+            if (tab === 'register') {
+                tabReg.className = "flex-1 py-2 text-xs font-semibold rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs transition";
+                tabPost.className = "flex-1 py-2 text-xs font-semibold rounded-lg text-slate-600 dark:text-slate-400 transition";
+                secReg.classList.remove('hidden');
+                secPost.classList.add('hidden');
+            } else {
+                tabPost.className = "flex-1 py-2 text-xs font-semibold rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs transition";
+                tabReg.className = "flex-1 py-2 text-xs font-semibold rounded-lg text-slate-600 dark:text-slate-400 transition";
+                secPost.classList.remove('hidden');
+                secReg.classList.add('hidden');
+                
+                if (activeLoggedInMerchant) {
+                    document.getElementById('merchant-login-box').classList.add('hidden');
+                    document.getElementById('merchant-dashboard-box').classList.remove('hidden');
+                    document.getElementById('logged-merchant-name').innerText = activeLoggedInMerchant.name;
+                } else {
+                    document.getElementById('merchant-login-box').classList.remove('hidden');
+                    document.getElementById('merchant-dashboard-box').classList.add('hidden');
+                }
+            }
+        }
+
+        // Handle Merchant Registration Request
+        function handleMerchantRegistration(e) {
+            e.preventDefault();
+            const newBiz = {
+                id: 'm_' + Date.now(),
+                name: document.getElementById('reg-biz-name').value,
+                owner: document.getElementById('reg-owner').value,
+                district: document.getElementById('reg-district').value,
+                br: document.getElementById('reg-br').value,
+                phone: document.getElementById('reg-phone').value,
+                status: 'Pending'
+            };
+
+            merchants.push(newBiz);
+            saveData();
+            document.getElementById('merchant-reg-form').reset();
+            showToast('Business registration submitted! Waiting for admin approval.', 'success');
+            switchMerchantTab('post');
+        }
+
+        // Merchant Login Verification
+        function verifyMerchantLogin() {
+            const inputVal = document.getElementById('login-merchant-id').value.trim().toLowerCase();
+            const found = merchants.find(m => (m.phone.toLowerCase() === inputVal || m.name.toLowerCase().includes(inputVal)) && m.status === 'Approved');
+
+            if (found) {
+                activeLoggedInMerchant = found;
+                localStorage.setItem('gasalert_active_merchant', JSON.stringify(found));
+                document.getElementById('merchant-login-box').classList.add('hidden');
+                document.getElementById('merchant-dashboard-box').classList.remove('hidden');
+                document.getElementById('logged-merchant-name').innerText = found.name;
+                showToast(`Welcome, ${found.name}! Verified merchant access granted.`, 'success');
+            } else {
+                showToast('No approved merchant account found with this ID or phone number. Check with Admin.', 'warning');
+            }
+        }
+
+        function logoutMerchant() {
+            activeLoggedInMerchant = null;
+            localStorage.removeItem('gasalert_active_merchant');
+            document.getElementById('merchant-login-box').classList.remove('hidden');
+            document.getElementById('merchant-dashboard-box').classList.add('hidden');
+            showToast('Logged out of merchant portal', 'success');
+        }
+
+        // Handle Sponsored Report Submission by Verified Merchant
+        function handleSponsoredReportSubmit(e) {
+            e.preventDefault();
+            if (!activeLoggedInMerchant) {
+                showToast('You must be logged in as a verified merchant to post stock updates.', 'warning');
+                return;
+            }
+
+            const newListing = {
+                id: Date.now().toString(),
+                store: activeLoggedInMerchant.name,
+                district: activeLoggedInMerchant.district,
+                item: document.getElementById('spon-item').value,
+                status: document.getElementById('spon-status').value,
+                note: document.getElementById('spon-note').value,
+                time: translations[currentLang].just_now || 'Just now',
+                upvotes: 1,
+                downvotes: 0,
+                pinned: false,
+                flagged: false,
+                merchantVerified: true
+            };
+
+            alerts.unshift(newListing);
+            saveData();
+            closeMerchantPortal();
+            showToast('Sponsored stock listing published successfully!', 'success');
+        }
+
+        // Render User Feed with Verified Merchant Badges
         function renderUserFeed() {
             const grid = document.getElementById('alerts-grid');
             const emptyState = document.getElementById('empty-state');
@@ -876,16 +1011,7 @@
             const itemFilter = document.getElementById('filter-item').value.toLowerCase();
             const statusFilter = document.getElementById('filter-status').value.toLowerCase();
 
-            // Filter out flagged items or items where net score (upvotes - downvotes) <= -3 (auto-spam protection)
-            let filtered = alerts.filter(item => {
-                if (item.flagged) return false;
-                const netScore = (item.upvotes || 0) - (item.downvotes || 0);
-                if (netScore <= -3) {
-                    item.flagged = true; // Auto-flag
-                    return false;
-                }
-                return true;
-            });
+            let filtered = alerts.filter(item => !item.flagged);
 
             if (search) {
                 filtered = filtered.filter(item => 
@@ -908,14 +1034,13 @@
                 filtered = filtered.filter(item => item.status.toLowerCase() === s.toLowerCase());
             }
 
-            // Sort pinned first, then by net trust score descending
             filtered.sort((a, b) => {
                 if (b.pinned !== a.pinned) return (b.pinned === true) - (a.pinned === true);
                 return ((b.upvotes - b.downvotes) - (a.upvotes - a.downvotes));
             });
 
             const dict = translations[currentLang] || translations['en'];
-            document.getElementById('results-count').innerText = `${filtered.length} reports`;
+            document.getElementById('results-count').innerText = `${filtered.length} listings`;
 
             if (filtered.length === 0) {
                 grid.innerHTML = '';
@@ -935,20 +1060,27 @@
                     iconClass = 'fa-circle-xmark text-rose-600 dark:text-rose-400';
                 }
 
-                const netScore = (item.upvotes || 0) - (item.downvotes || 0);
-
                 return `
                     <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border ${item.pinned ? 'border-emerald-500 ring-2 ring-emerald-500/10' : 'border-slate-200 dark:border-slate-800'} shadow-xs hover:shadow-md transition flex flex-col justify-between relative overflow-hidden">
-                        ${item.pinned ? `<div class="absolute top-0 right-0 bg-emerald-600 text-white text-[10px] font-bold px-3 py-0.5 rounded-bl-xl shadow-xs"><i class="fa-solid fa-thumbtack mr-1"></i> ${dict.pinned_update || 'Pinned Update'}</div>` : ''}
+                        ${item.pinned ? `<div class="absolute top-0 right-0 bg-emerald-600 text-white text-[10px] font-bold px-3 py-0.5 rounded-bl-xl shadow-xs"><i class="fa-solid fa-thumbtack mr-1"></i> Pinned</div>` : ''}
                         
                         <div>
-                            <div class="flex items-start justify-between gap-2 mb-3">
+                            <div class="flex items-start justify-between gap-2 mb-2">
                                 <div>
                                     <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center mb-1">
                                         <i class="fa-solid fa-location-dot text-emerald-600 dark:text-emerald-400 mr-1.5"></i> ${item.district}
                                     </span>
-                                    <h4 class="font-bold text-slate-900 dark:text-white text-base leading-snug">${item.store}</h4>
+                                    <h4 class="font-bold text-slate-900 dark:text-white text-base leading-snug flex items-center">
+                                        ${item.store}
+                                    </h4>
                                 </div>
+                            </div>
+
+                            <!-- Sponsored / Verified Merchant Badge -->
+                            <div class="mb-3">
+                                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-900">
+                                    <i class="fa-solid fa-certificate text-emerald-600 text-xs"></i> <span data-i18n="sponsored_badge">Sponsored / Verified Merchant</span>
+                                </span>
                             </div>
 
                             <div class="flex flex-wrap items-center gap-2 mb-3">
@@ -963,18 +1095,15 @@
                             <p class="text-slate-600 dark:text-slate-300 text-sm mb-4 bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl border border-slate-100 dark:border-slate-800">${item.note || 'No additional notes provided.'}</p>
                         </div>
 
-                        <!-- Trust Score Voting Buttons -->
                         <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
                             <span class="flex items-center"><i class="fa-regular fa-clock mr-1"></i> ${item.time}</span>
                             
                             <div class="flex items-center space-x-1.5">
-                                <!-- Upvote Button -->
-                                <button onclick="voteAlert('${item.id}', 'up')" class="flex items-center space-x-1 bg-emerald-50 dark:bg-emerald-950/60 hover:bg-emerald-100 dark:hover:bg-emerald-900 text-emerald-800 dark:text-emerald-300 font-semibold px-2.5 py-1.5 rounded-lg transition active:scale-95 border border-emerald-200 dark:border-emerald-900" title="Confirm accurate stock">
+                                <button onclick="voteAlert('${item.id}', 'up')" class="flex items-center space-x-1 bg-emerald-50 dark:bg-emerald-950/60 hover:bg-emerald-100 text-emerald-800 dark:text-emerald-300 font-semibold px-2.5 py-1.5 rounded-lg transition active:scale-95 border border-emerald-200 dark:border-emerald-900" title="Confirm accurate stock">
                                     <i class="fa-solid fa-thumbs-up"></i>
                                     <span>${item.upvotes || 0}</span>
                                 </button>
-                                <!-- Downvote Button -->
-                                <button onclick="voteAlert('${item.id}', 'down')" class="flex items-center space-x-1 bg-rose-50 dark:bg-rose-950/60 hover:bg-rose-100 dark:hover:bg-rose-900 text-rose-700 dark:text-rose-300 font-semibold px-2.5 py-1.5 rounded-lg transition active:scale-95 border border-rose-200 dark:border-rose-900" title="Report as fake or spam">
+                                <button onclick="voteAlert('${item.id}', 'down')" class="flex items-center space-x-1 bg-rose-50 dark:bg-rose-950/60 hover:bg-rose-100 text-rose-700 dark:text-rose-300 font-semibold px-2.5 py-1.5 rounded-lg transition active:scale-95 border border-rose-200 dark:border-rose-900" title="Report as issue">
                                     <i class="fa-solid fa-thumbs-down"></i>
                                     <span>${item.downvotes || 0}</span>
                                 </button>
@@ -995,7 +1124,6 @@
             renderUserFeed();
         }
 
-        // Upvote / Downvote Trust Mechanism
         function voteAlert(id, type) {
             const item = alerts.find(a => a.id === id);
             if (item) {
@@ -1004,51 +1132,13 @@
                     showToast('Thank you! Stock status confirmed.', 'success');
                 } else if (type === 'down') {
                     item.downvotes = (item.downvotes || 0) + 1;
-                    showToast('Feedback recorded. Thank you for keeping feed clean.', 'warning');
-                    const netScore = item.upvotes - item.downvotes;
-                    if (netScore <= -3) {
-                        item.flagged = true;
-                        showToast('Alert automatically hidden due to excessive negative votes.', 'warning');
-                    }
+                    showToast('Feedback recorded.', 'warning');
                 }
                 saveData();
             }
         }
 
-        // Modal Controls for Report
-        function openReportModal() {
-            document.getElementById('report-form').reset();
-            document.getElementById('report-modal').classList.remove('hidden');
-        }
-
-        function closeReportModal() {
-            document.getElementById('report-modal').classList.add('hidden');
-        }
-
-        function handleReportSubmit(e) {
-            e.preventDefault();
-            const newReport = {
-                id: Date.now().toString(),
-                store: document.getElementById('rep-store').value,
-                district: document.getElementById('rep-district').value,
-                item: document.getElementById('rep-item').value,
-                status: document.getElementById('rep-status').value,
-                note: document.getElementById('rep-note').value,
-                time: translations[currentLang].just_now || 'Just now',
-                upvotes: 1,
-                downvotes: 0,
-                verified: false,
-                pinned: false,
-                flagged: false
-            };
-
-            alerts.unshift(newReport);
-            saveData();
-            closeReportModal();
-            showToast('Live report successfully submitted to community!', 'success');
-        }
-
-        // Admin Table & Management
+        // Admin Tables & Management
         function renderAdminTable() {
             const tbody = document.getElementById('admin-table-body');
             const search = document.getElementById('admin-search').value.toLowerCase();
@@ -1059,41 +1149,35 @@
             }
 
             if (list.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-slate-400">No reports found.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-slate-400">No stock listings found.</td></tr>`;
                 return;
             }
 
             tbody.innerHTML = list.map(item => {
                 const netScore = (item.upvotes || 0) - (item.downvotes || 0);
                 return `
-                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition ${item.flagged ? 'bg-rose-50/50 dark:bg-rose-950/20' : ''}">
+                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
                         <td class="py-3 px-4">
                             <div class="font-bold text-slate-900 dark:text-white">${item.store}</div>
                             <div class="text-xs text-slate-500 dark:text-slate-400">${item.district} • ${item.time}</div>
                         </td>
                         <td class="py-3 px-4 font-medium text-slate-700 dark:text-slate-300">${item.item}</td>
                         <td class="py-3 px-4">
-                            <span class="px-2 py-0.5 rounded text-xs font-semibold ${item.status === 'Available' ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300' : item.status === 'Limited' ? 'bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300' : 'bg-rose-100 dark:bg-rose-950 text-rose-800 dark:text-rose-300'}">
+                            <span class="px-2 py-0.5 rounded text-xs font-semibold ${item.status === 'Available' ? 'bg-emerald-100 text-emerald-800' : item.status === 'Limited' ? 'bg-amber-100 text-amber-800' : 'bg-rose-100 text-rose-800'}">
                                 ${item.status}
                             </span>
                         </td>
                         <td class="py-3 px-4 font-semibold text-slate-700 dark:text-slate-300">
-                            <span class="text-emerald-600 dark:text-emerald-400">+${item.upvotes || 0}</span> / <span class="text-rose-600">-${item.downvotes || 0}</span> (Net: ${netScore})
+                            +${item.upvotes || 0} / -${item.downvotes || 0}
                         </td>
                         <td class="py-3 px-4">
-                            ${item.flagged ? '<span class="px-2 py-0.5 rounded bg-rose-100 dark:bg-rose-950 text-rose-800 dark:text-rose-300 text-xs font-bold">Spam / Hidden</span>' : item.verified ? '<span class="px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 text-xs font-bold">Verified</span>' : '<span class="px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 text-xs font-bold">Pending</span>'}
+                            <span class="px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 text-xs font-bold">Verified Merchant</span>
                         </td>
                         <td class="py-3 px-4 text-right space-x-1">
-                            <button onclick="togglePin('${item.id}')" class="p-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg text-xs transition" title="${item.pinned ? 'Unpin' : 'Pin to top'}">
-                                <i class="fa-solid fa-thumbtack ${item.pinned ? 'text-emerald-600 dark:text-emerald-400' : ''}"></i>
+                            <button onclick="togglePin('${item.id}')" class="p-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300 rounded-lg text-xs transition" title="Pin to top">
+                                <i class="fa-solid fa-thumbtack ${item.pinned ? 'text-emerald-600' : ''}"></i>
                             </button>
-                            <button onclick="toggleVerify('${item.id}')" class="p-1.5 bg-emerald-50 dark:bg-emerald-950 hover:bg-emerald-100 dark:hover:bg-emerald-900 text-emerald-700 dark:text-emerald-300 rounded-lg text-xs transition" title="Verify Report">
-                                <i class="fa-solid fa-check"></i>
-                            </button>
-                            <button onclick="toggleFlag('${item.id}')" class="p-1.5 bg-amber-50 dark:bg-amber-950 hover:bg-amber-100 dark:hover:bg-amber-900 text-amber-700 dark:text-amber-300 rounded-lg text-xs transition" title="Flag as Spam">
-                                <i class="fa-solid fa-flag"></i>
-                            </button>
-                            <button onclick="deleteAlert('${item.id}')" class="p-1.5 bg-rose-50 dark:bg-rose-950 hover:bg-rose-100 dark:hover:bg-rose-900 text-rose-700 dark:text-rose-300 rounded-lg text-xs transition" title="Delete Report">
+                            <button onclick="deleteAlert('${item.id}')" class="p-1.5 bg-rose-50 dark:bg-rose-950 hover:bg-rose-100 text-rose-700 rounded-lg text-xs transition" title="Delete Listing">
                                 <i class="fa-solid fa-trash"></i>
                             </button>
                         </td>
@@ -1102,53 +1186,102 @@
             }).join('');
         }
 
+        // Render Admin Merchants Verification Table
+        function renderAdminMerchantsTable() {
+            const tbody = document.getElementById('admin-merchants-table-body');
+            if (!tbody) return;
+
+            if (merchants.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-slate-400">No pending merchant requests.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = merchants.map(m => `
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
+                    <td class="py-3 px-4">
+                        <div class="font-bold text-slate-900 dark:text-white">${m.name}</div>
+                        <div class="text-xs text-slate-500">Owner: ${m.owner}</div>
+                    </td>
+                    <td class="py-3 px-4 text-slate-700 dark:text-slate-300 font-medium">${m.district}</td>
+                    <td class="py-3 px-4 font-mono text-xs text-slate-600 dark:text-slate-400">${m.br}</td>
+                    <td class="py-3 px-4 text-slate-700 dark:text-slate-300 font-semibold">${m.phone}</td>
+                    <td class="py-3 px-4">
+                        <span class="px-2.5 py-0.5 rounded text-xs font-bold ${m.status === 'Approved' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300' : 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300'}">
+                            ${m.status}
+                        </span>
+                    </td>
+                    <td class="py-3 px-4 text-right space-x-1">
+                        ${m.status !== 'Approved' ? `
+                            <button onclick="approveMerchant('${m.id}')" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold transition">
+                                <i class="fa-solid fa-check mr-1"></i> Approve
+                            </button>
+                        ` : `
+                            <button onclick="revokeMerchant('${m.id}')" class="px-2.5 py-1 bg-amber-100 text-amber-800 hover:bg-amber-200 rounded-lg text-xs font-semibold transition">
+                                Revoke
+                            </button>
+                        `}
+                        <button onclick="deleteMerchant('${m.id}')" class="p-1 bg-rose-50 text-rose-700 hover:bg-rose-100 rounded-lg text-xs transition" title="Delete">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function approveMerchant(id) {
+            const m = merchants.find(x => x.id === id);
+            if (m) {
+                m.status = 'Approved';
+                saveData();
+                showToast(`Merchant "${m.name}" approved successfully!`, 'success');
+            }
+        }
+
+        function revokeMerchant(id) {
+            const m = merchants.find(x => x.id === id);
+            if (m) {
+                m.status = 'Pending';
+                saveData();
+                showToast(`Merchant approval revoked.`, 'warning');
+            }
+        }
+
+        function deleteMerchant(id) {
+            if (confirm('Delete this merchant account?')) {
+                merchants = merchants.filter(x => x.id !== id);
+                saveData();
+                showToast('Merchant deleted', 'success');
+            }
+        }
+
         function updateStats() {
-            document.getElementById('stat-total').innerText = alerts.length;
-            document.getElementById('stat-pending').innerText = alerts.filter(a => !a.verified && !a.flagged).length;
-            document.getElementById('stat-verified').innerText = alerts.filter(a => a.verified).length;
+            document.getElementById('stat-merchants').innerText = merchants.filter(m => m.status === 'Approved').length;
+            document.getElementById('stat-pending-merchants').innerText = merchants.filter(m => m.status === 'Pending').length;
+            document.getElementById('stat-listings').innerText = alerts.length;
             document.getElementById('stat-flagged').innerText = alerts.filter(a => a.flagged).length;
         }
 
-        // Admin Actions
         function togglePin(id) {
             const item = alerts.find(a => a.id === id);
             if (item) {
                 item.pinned = !item.pinned;
                 saveData();
-                showToast(item.pinned ? 'Alert pinned to top of feed' : 'Alert unpinned', 'success');
-            }
-        }
-
-        function toggleVerify(id) {
-            const item = alerts.find(a => a.id === id);
-            if (item) {
-                item.verified = !item.verified;
-                item.flagged = false;
-                saveData();
-                showToast('Report verification status updated', 'success');
-            }
-        }
-
-        function toggleFlag(id) {
-            const item = alerts.find(a => a.id === id);
-            if (item) {
-                item.flagged = !item.flagged;
-                saveData();
-                showToast('Report flagged/unflagged as spam', 'success');
+                showToast(item.pinned ? 'Listing pinned to top' : 'Listing unpinned', 'success');
             }
         }
 
         function deleteAlert(id) {
-            if (confirm('Are you sure you want to permanently delete this report?')) {
+            if (confirm('Permanently delete this stock listing?')) {
                 alerts = alerts.filter(a => a.id !== id);
                 saveData();
-                showToast('Report deleted successfully', 'success');
+                showToast('Listing deleted successfully', 'success');
             }
         }
 
         function resetDemoData() {
-            if (confirm('Reset to default sample reports?')) {
+            if (confirm('Reset to default sample data?')) {
                 alerts = [...defaultAlerts];
+                merchants = [...defaultMerchants];
                 saveData();
                 showToast('Demo data restored', 'success');
             }
@@ -1171,7 +1304,7 @@
             document.getElementById('broadcast-text').innerText = msg;
             document.getElementById('broadcast-banner').classList.remove('hidden');
             closeBroadcastModal();
-            showToast('Urgent broadcast banner published to all citizens!', 'success');
+            showToast('Urgent broadcast banner published!', 'success');
         }
 
         function dismissBroadcast() {
